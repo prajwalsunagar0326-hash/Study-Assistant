@@ -88,15 +88,46 @@ export default async function handler(req: any, res: any) {
     });
 
     const responseText = response.text;
-    if (!responseText) {
-      throw new Error('Gemini returned an empty response.');
+    if (responseText && responseText.trim()) {
+      return res.status(200).json({ data: responseText });
+    }
+    throw new Error('Gemini returned an empty response.');
+  } catch (err: any) {
+    console.warn('[Vercel Serverless Warning] Direct gemini-3.5-flash-lite error:', err?.message || err);
+
+    // Fallback: Try gemini-3.8-flash on 503 or load spikes
+    try {
+      const restUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${geminiKey}`;
+      const restRes = await fetch(restUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: 'user',
+              parts: [{ text: `${SYSTEM_INSTRUCTION}\n\nUser Topic / Notes:\n${cleanPrompt}` }],
+            },
+          ],
+          generationConfig: {
+            responseMimeType: 'application/json',
+            temperature: 0.5,
+          },
+        }),
+      });
+
+      if (restRes.ok) {
+        const restData = await restRes.json();
+        const candidateText = restData?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (candidateText && candidateText.trim()) {
+          return res.status(200).json({ data: candidateText });
+        }
+      }
+    } catch (fallbackErr) {
+      console.error('[Vercel Fallback Error]:', fallbackErr);
     }
 
-    return res.status(200).json({ data: responseText });
-  } catch (err: any) {
-    console.error('[Vercel Serverless Function Error]:', err);
     return res.status(500).json({
-      error: err?.message || 'Failed to generate study set via Gemini.',
+      error: 'The AI model is currently under high demand. Please try again in a moment.',
     });
   }
 }

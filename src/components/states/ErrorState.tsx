@@ -19,13 +19,26 @@ interface ErrorStateProps {
 export const ErrorState: React.FC<ErrorStateProps> = ({ error, onRetry, onBack }) => {
   const [showDetails, setShowDetails] = useState(false);
 
+  const getCleanMessage = (rawMsg: string) => {
+    if (!rawMsg) return '';
+    try {
+      if (rawMsg.includes('"message"')) {
+        const parsed = JSON.parse(rawMsg);
+        return parsed?.error?.message || parsed?.message || rawMsg;
+      }
+    } catch {}
+    return rawMsg;
+  };
+
+  const cleanMessage = getCleanMessage(error.message);
+
   const getErrorPresentation = () => {
     switch (error.type) {
       case 'EMPTY_RESPONSE':
         return {
           title: 'Empty Response Received',
           description:
-            error.message ||
+            cleanMessage ||
             'StudyAI received an empty completion from the model. Providing more lecture notes or a specific topic helps guide generation.',
           badge: 'Empty Output',
         };
@@ -40,7 +53,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({ error, onRetry, onBack }
         return {
           title: 'Strict Schema Validation Rejected Data',
           description:
-            error.message ||
+            cleanMessage ||
             'The AI response did not satisfy the strict runtime schema requirements (e.g. missing questions, empty options, or mismatched correct answer).',
           badge: 'Schema Violation',
         };
@@ -53,11 +66,11 @@ export const ErrorState: React.FC<ErrorStateProps> = ({ error, onRetry, onBack }
         };
       case 'SERVER_ERROR':
         return {
-          title: 'Server Error (500)',
+          title: 'Service Temporarily Unavailable',
           description:
-            error.message ||
-            'The generation server encountered an unexpected error. You can retry immediately.',
-          badge: 'Server 500',
+            cleanMessage ||
+            'The generation service encountered a temporary spike in traffic. You can retry immediately.',
+          badge: 'High Demand',
         };
       default:
         return {

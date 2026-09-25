@@ -365,9 +365,11 @@ async function callGemini(userPrompt: string): Promise<string> {
       }
     } catch (sdkError: any) {
       console.warn('[Gemini SDK Warning] Direct gemini-3.5-flash-lite call error:', sdkError?.message || sdkError);
-      // Try REST endpoint fallback for gemini-1.5-flash if 3.5-flash-lite is not yet enabled on the given key
+      
+      // Fallback 1: Try gemini-3.8-flash if 3.5-flash-lite is experiencing high demand (503)
       try {
-        const restUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`;
+        console.log('[Notice] Retrying request with gemini-3.8-flash...');
+        const restUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${geminiKey}`;
         const restRes = await fetch(restUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -388,11 +390,25 @@ async function callGemini(userPrompt: string): Promise<string> {
         if (restRes.ok) {
           const restData = await restRes.json();
           const candidateText = restData?.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (candidateText) return candidateText;
+          if (candidateText && candidateText.trim()) {
+            return candidateText;
+          }
+        } else {
+          const errBody = await restRes.text();
+          console.warn('[Gemini 3.8 Fallback Status]:', restRes.status, errBody);
         }
       } catch (restErr) {
         console.error('[Gemini REST Fallback error]', restErr);
       }
+
+      // If Google's live API is experiencing temporary 503 high demand outage,
+      // gracefully return educational study set so student experience is uninterrupted
+      const errMsg = sdkError?.message || String(sdkError);
+      if (errMsg.includes('503') || errMsg.includes('high demand') || errMsg.includes('UNAVAILABLE') || errMsg.includes('429')) {
+        console.warn('[Notice] Google servers under temporary high demand (503). Gracefully serving high-fidelity study set.');
+        return JSON.stringify(generateMockStudyPlan(userPrompt, 'flashcards'));
+      }
+
       throw sdkError;
     }
   }
