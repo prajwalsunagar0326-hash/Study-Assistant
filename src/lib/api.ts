@@ -1,139 +1,96 @@
-import { TripPlan, DayPlan, DayAdjustmentPatch, ApiError } from '../types/result';
-import { validateTripPlan, validateDayPatch } from './validateResult';
-
-const API_BASE = '/api';
-
-export interface DayAdjustmentPayload {
-  tripDestination: string;
-  day: DayPlan;
-  instruction: string;
-}
+import { StudyPlan, ApiError, StudyMode } from '../types/study';
+import { validateStudyPlan } from './validateStudyPlan';
 
 /**
- * Generate a complete trip plan from user free-text.
- * Calls backend proxy, parses, and validates data.
+ * Sends a study generation request to the backend with AbortSignal support.
  */
-export async function generateTrip(
+export async function generateStudyPlanApi(
   prompt: string,
+  mode: StudyMode,
   signal?: AbortSignal
-): Promise<TripPlan> {
-  let response: Response;
-
+): Promise<{ success: true; data: StudyPlan } | { success: false; error: ApiError }> {
   try {
-    response = await fetch(`${API_BASE}/generate`, {
+    const response = await fetch('/api/generate-study', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ prompt }),
+      body: JSON.stringify({ prompt, mode }),
       signal,
     });
+
+    if (!response.ok) {
+      let errorMessage = `Server error (${response.status})`;
+      try {
+        const errJson = await response.json();
+        if (errJson && errJson.error) {
+          errorMessage = errJson.error;
+        }
+      } catch {
+        // Fallback to status text
+        if (response.statusText) errorMessage = response.statusText;
+      }
+
+      return {
+        success: false,
+        error: {
+          type: response.status >= 500 ? 'SERVER_ERROR' : 'SCHEMA_VALIDATION_ERROR',
+          message: errorMessage,
+          statusCode: response.status,
+        },
+      };
+    }
+
+    const payload = await response.json();
+    const rawData = payload?.data;
+
+    // Validate and sanitize the payload using runtime schema
+    return validateStudyPlan(rawData);
   } catch (err: unknown) {
     if (err instanceof DOMException && err.name === 'AbortError') {
-      const abortErr: ApiError = {
-        type: 'TIMEOUT_ERROR',
-        message: 'Request took too long or was canceled.',
+      return {
+        success: false,
+        error: {
+          type: 'ABORTED',
+          message: 'Request was cancelled by a newer study request.',
+        },
       };
-      throw abortErr;
-    }
-    const networkErr: ApiError = {
-      type: 'NETWORK_ERROR',
-      message: 'Failed to communicate with proxy backend. Is the server running?',
-      rawDetails: err instanceof Error ? err.message : String(err),
-    };
-    throw networkErr;
-  }
-
-  if (!response.ok) {
-    let errorDetail = '';
-    try {
-      const errJson = await response.json();
-      errorDetail = errJson.error || errJson.message || '';
-    } catch {
-      // response wasn't JSON
     }
 
-    const serverErr: ApiError = {
-      type: 'SERVER_ERROR',
-      message: errorDetail || `Backend responded with HTTP status ${response.status}`,
+    return {
+      success: false,
+      error: {
+        type: 'NETWORK_ERROR',
+        message: 'Unable to connect to the StudyAI backend. Please check your network connection.',
+        rawDetails: err instanceof Error ? err.message : String(err),
+      },
     };
-    throw serverErr;
   }
-
-  const rawJson = await response.json();
-
-  // Validate the returned object or raw string before passing to React state
-  const validation = validateTripPlan(rawJson.data || rawJson);
-  if (!validation.success) {
-    throw validation.error;
-  }
-
-  return validation.data;
 }
 
 /**
- * Refine/adjust a single day's plan.
- * Returns a patch containing the updated stops and day theme.
+ * Checks backend health and active LLM configuration
  */
-export async function adjustDay(
-  payload: DayAdjustmentPayload,
-  signal?: AbortSignal
-): Promise<DayAdjustmentPatch> {
-  let response: Response;
-
+export async function checkBackendHealth(): Promise<{
+  status: string;
+  app: string;
+  mode: 'live-llm' | 'mock-fallback';
+  model: string;
+  message: string;
+}> {
   try {
-    response = await fetch(`${API_BASE}/adjust-day`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        destination: payload.tripDestination,
-        dayNumber: payload.day.dayNumber,
-        currentDayTitle: payload.day.title,
-        currentTheme: payload.day.theme,
-        currentStops: payload.day.stops,
-        instruction: payload.instruction,
-      }),
-      signal,
-    });
-  } catch (err: unknown) {
-    if (err instanceof DOMException && err.name === 'AbortError') {
-      const abortErr: ApiError = {
-        type: 'TIMEOUT_ERROR',
-        message: 'Adjustment request timed out.',
-      };
-      throw abortErr;
+    const res = await fetch('/api/health');
+    if (res.ok) {
+      return await res.json();
     }
-    const networkErr: ApiError = {
-      type: 'NETWORK_ERROR',
-      message: 'Unable to reach backend for day adjustment.',
-      rawDetails: err instanceof Error ? err.message : String(err),
-    };
-    throw networkErr;
+  } catch (err) {
+    console.warn('[StudyAI Health Check Failed]:', err);
   }
-
-  if (!response.ok) {
-    let errorMsg = `Server error ${response.status}`;
-    try {
-      const errJson = await response.json();
-      if (errJson.error) errorMsg = errJson.error;
-    } catch {
-      // fallback
-    }
-    const serverErr: ApiError = {
-      type: 'SERVER_ERROR',
-      message: errorMsg,
-    };
-    throw serverErr;
-  }
-
-  const rawJson = await response.json();
-  const validation = validateDayPatch(rawJson.data || rawJson, payload.day.dayNumber);
-
-  if (!validation.success) {
-    throw validation.error;
-  }
-
-  return validation.data;
+  return {
+    status: 'offline',
+    app: 'StudyAI',
+    mode: 'mock-fallback',
+    model: 'offline-mode',
+    message: 'Backend server is not responding.',
+  };
 }

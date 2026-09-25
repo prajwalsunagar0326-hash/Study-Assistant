@@ -1,291 +1,184 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { TripPlan, ApiError } from './types/result';
-import { PromptInput } from './components/PromptInput';
-import { ResultView } from './components/ResultView';
-import { generateTrip } from './lib/api';
-import { MapPin, Sparkles, Activity, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { Header } from './components/layout/Header';
+import { StudyInput } from './components/study/StudyInput';
+import { StudyHeader } from './components/study/StudyHeader';
+import { FlashcardView } from './components/study/FlashcardView';
+import { QuizView } from './components/study/QuizView';
+import { LoadingState } from './components/states/LoadingState';
+import { ErrorState } from './components/states/ErrorState';
+import { EmptyState } from './components/states/EmptyState';
+import { useStudyGeneration } from './hooks/useStudyGeneration';
+import { useReducedMotion } from './hooks/useReducedMotion';
+import { StudyMode } from './types/study';
+import { ShieldCheck } from 'lucide-react';
 
 export const App: React.FC = () => {
-  const [tripPlan, setTripPlan] = useState<TripPlan | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<ApiError | null>(null);
-  const [lastPrompt, setLastPrompt] = useState<string>('');
-  const [serverStatus, setServerStatus] = useState<{ mode: string; status: string } | null>(null);
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('studyai-theme');
+      if (saved === 'dark' || saved === 'light') return saved;
+      if (window.matchMedia('(prefers-color-scheme: light)').matches) return 'light';
+    }
+    return 'dark';
+  });
 
-  // Stale request guard as specified in Section 6
-  const requestId = useRef<number>(0);
-  const abortControllerRef = useRef<AbortController | null>(null);
+  const [isDiagnosticOpen, setIsDiagnosticOpen] = useState<boolean>(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
 
-  // Check backend proxy health on mount
+  const {
+    studyPlan,
+    mode,
+    setMode,
+    isLoading,
+    loadingStage,
+    error,
+    generate,
+    cancelGeneration,
+    retry,
+    resetToNewTopic,
+  } = useStudyGeneration();
+
+  // Synchronize theme with HTML document attribute
   useEffect(() => {
-    fetch('/api/health')
-      .then((res) => res.json())
-      .then((data) => setServerStatus(data))
-      .catch(() => {
-        setServerStatus({ mode: 'unreachable', status: 'error' });
-      });
-  }, []);
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('studyai-theme', theme);
+  }, [theme]);
 
-  const handleGenerate = async (promptText: string) => {
-    // Increment request ID to guard against stale responses
-    const currentId = ++requestId.current;
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
-    // Cancel any ongoing in-flight request
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-    const abortController = new AbortController();
-    abortControllerRef.current = abortController;
+  // GSAP Entrance animation on first load (400-800ms)
+  useGSAP(
+    () => {
+      if (prefersReducedMotion) return;
 
-    setIsLoading(true);
-    setError(null);
-    setLastPrompt(promptText);
+      const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
 
-    // Auto-scroll to view
-    window.scrollTo({ top: 120, behavior: 'smooth' });
-
-    try {
-      const plan = await generateTrip(promptText, abortController.signal);
-
-      // Stale response guard: ignore if another request started in the meantime
-      if (currentId !== requestId.current) {
-        console.warn(`[Stale Request Guard] Ignored request #${currentId} because newer request #${requestId.current} started.`);
-        return;
+      if (heroRef.current) {
+        tl.fromTo(
+          '.hero-element',
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, stagger: 0.12, duration: 0.55 }
+        ).fromTo(
+          '.input-panel-anim',
+          { opacity: 0, scale: 0.98, y: 12 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.45 },
+          '-=0.25'
+        );
       }
+    },
+    { scope: containerRef, dependencies: [prefersReducedMotion] }
+  );
 
-      setTripPlan(plan);
-      setError(null);
-    } catch (err: unknown) {
-      if (currentId !== requestId.current) return;
-
-      const apiErr = err as ApiError;
-      setError(apiErr);
-      setTripPlan(null);
-    } finally {
-      if (currentId === requestId.current) {
-        setIsLoading(false);
-      }
-    }
-  };
-
-  const handleRetry = () => {
-    if (lastPrompt) {
-      handleGenerate(lastPrompt);
-    }
-  };
-
-  const handleCancelLoading = () => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-    setIsLoading(false);
-  };
-
-  const handleReset = () => {
-    setTripPlan(null);
-    setError(null);
-    setLastPrompt('');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  // Interview simulation helper
-  const handleSimulateError = (type: '500' | 'malformed' | 'wrong_shape') => {
-    let testPrompt = '';
-    if (type === '500') testPrompt = 'Weekend in Berlin __test_error_500__';
-    else if (type === 'malformed') testPrompt = 'Weekend in Rome __test_malformed__';
-    else if (type === 'wrong_shape') testPrompt = 'Weekend in Madrid __test_wrong_shape__';
-
-    handleGenerate(testPrompt);
+  const handleGenerate = (promptText: string, selectedMode: StudyMode) => {
+    generate(promptText, selectedMode);
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Top Navbar Header */}
-      <header
-        style={{
-          borderBottom: '1px solid var(--border-subtle)',
-          background: 'rgba(10, 13, 20, 0.8)',
-          backdropFilter: 'blur(12px)',
-          position: 'sticky',
-          top: 0,
-          zIndex: 100,
-        }}
-      >
-        <div
-          style={{
-            maxWidth: '1100px',
-            margin: '0 auto',
-            padding: '14px 20px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '12px',
-          }}
-        >
-          {/* Logo & Product Title */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={handleReset}>
-            <div
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '10px',
-                background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 4px 12px rgba(99, 102, 241, 0.4)',
-              }}
-            >
-              <MapPin size={20} color="white" />
-            </div>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '1.2rem', fontWeight: '800', letterSpacing: '-0.02em', color: 'var(--text-main)' }}>
-                  Voyage<span className="gradient-text">AI</span>
-                </span>
-                <span
-                  style={{
-                    fontSize: '0.68rem',
-                    fontWeight: '700',
-                    background: 'rgba(99, 102, 241, 0.15)',
-                    color: '#818cf8',
-                    padding: '2px 6px',
-                    borderRadius: '4px',
-                    border: '1px solid rgba(99, 102, 241, 0.3)',
-                  }}
-                >
-                  STRUCTURED TOOL
-                </span>
-              </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
-                Interactive Itinerary Engine • No Chat Clutter
-              </div>
-            </div>
-          </div>
+    <div ref={containerRef} className="min-h-screen flex flex-col transition-colors duration-300">
+      {/* Top Header */}
+      <Header
+        isDiagnosticOpen={isDiagnosticOpen}
+        onToggleDiagnostic={() => setIsDiagnosticOpen((prev) => !prev)}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      />
 
-          {/* Backend Proxy Status Pill */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '4px 10px',
-                borderRadius: '20px',
-                background: 'rgba(255, 255, 255, 0.04)',
-                border: '1px solid var(--border-subtle)',
-                fontSize: '0.75rem',
-                color: 'var(--text-muted)',
-              }}
-            >
-              <Activity
-                size={12}
-                color={
-                  serverStatus?.status === 'ok'
-                    ? '#34d399'
-                    : serverStatus?.status === 'error'
-                    ? '#ef4444'
-                    : '#fbbf24'
-                }
-              />
-              <span>
-                Proxy:{' '}
-                {serverStatus?.mode === 'live-llm'
-                  ? 'Live LLM API'
-                  : serverStatus?.mode === 'mock-fallback'
-                  ? 'Mock Fallback Active'
-                  : 'Connecting...'}
-              </span>
-            </div>
-
-            <div
-              style={{
-                display: 'none',
-                alignItems: 'center',
-                gap: '4px',
-                fontSize: '0.75rem',
-                color: '#34d399',
-              }}
-              className="desktop-only"
-            >
-              <ShieldCheck size={14} />
-              <span>Strict Schema Validation</span>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Body */}
-      <main style={{ flex: 1, padding: '30px 16px 60px 16px' }}>
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          {/* Hero Header when no trip is active */}
-          {!tripPlan && !isLoading && (
-            <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  background: 'rgba(168, 85, 247, 0.1)',
-                  border: '1px solid rgba(168, 85, 247, 0.25)',
-                  padding: '4px 12px',
-                  borderRadius: '20px',
-                  fontSize: '0.78rem',
-                  fontWeight: '600',
-                  color: '#c084fc',
-                  marginBottom: '12px',
-                }}
-              >
-                <Sparkles size={13} />
-                <span>Zero-Chat • Strictly Structured UI</span>
+      {/* Main Workspace Body */}
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-8">
+        {/* If no study plan has been generated yet, show the Hero and Input Area */}
+        {!studyPlan && !isLoading && !error && (
+          <div className="space-y-8">
+            {/* Hero Section */}
+            <div ref={heroRef} className="text-center space-y-3 pt-2 sm:pt-4">
+              <div className="hero-element inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/25 text-xs font-semibold text-indigo-300">
+                <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
+                <span>Non-Chatbot Structured Learning Engine</span>
               </div>
-              <h1 style={{ fontSize: '2.4rem', fontWeight: '800', marginBottom: '8px', lineHeight: '1.2' }}>
-                Turn Free-Form Dreams Into <span className="gradient-text">Interactive Itineraries</span>
+              <h1 className="hero-element text-3xl sm:text-5xl font-extrabold tracking-tight text-[var(--foreground)]">
+                Study smarter. <span className="gradient-text">Learn faster.</span>
               </h1>
-              <p style={{ fontSize: '1rem', color: 'var(--text-muted)', maxWidth: '560px', margin: '0 auto' }}>
-                Type naturally. Our defensive parser asserts valid JSON and renders reactive tabs, reorderable stops, and day patches.
+              <p className="hero-element text-sm sm:text-base text-[var(--muted)] max-w-xl mx-auto leading-relaxed">
+                Paste your notes or enter a topic. StudyAI turns them into interactive flashcards or a quiz in seconds.
               </p>
             </div>
-          )}
 
-          {/* Free-form Input Area (Always accessible or collapsible when trip is loaded) */}
-          <PromptInput
-            onSubmit={handleGenerate}
-            isLoading={isLoading}
-            onSimulateError={handleSimulateError}
-          />
+            {/* Input Panel */}
+            <div className="input-panel-anim">
+              <StudyInput
+                onGenerate={handleGenerate}
+                isLoading={isLoading}
+                isDiagnosticOpen={isDiagnosticOpen}
+                defaultMode={mode}
+              />
+            </div>
 
-          {/* Interactive Result Section */}
-          <div style={{ marginTop: '28px' }}>
-            <ResultView
-              trip={tripPlan}
-              isLoading={isLoading}
-              error={error}
-              onUpdateTrip={setTripPlan}
-              onRetry={handleRetry}
-              onCancelLoading={handleCancelLoading}
-              onReset={handleReset}
-            />
+            {/* Empty State Features */}
+            <EmptyState />
           </div>
-        </div>
+        )}
+
+        {/* Loading State with progressive UX stages & cancellation */}
+        {isLoading && (
+          <LoadingState stage={loadingStage} onCancel={cancelGeneration} />
+        )}
+
+        {/* Error State with user-friendly remediation & retry */}
+        {!isLoading && error && (
+          <ErrorState error={error} onRetry={retry} onBack={resetToNewTopic} />
+        )}
+
+        {/* Active Study Plan Workspace */}
+        {!isLoading && !error && studyPlan && (
+          <div className="space-y-8 animate-fade-in">
+            {/* Header: Title, Summary, Navigation Tabs, Export */}
+            <StudyHeader
+              studyPlan={studyPlan}
+              activeMode={mode}
+              onSwitchMode={(newMode) => setMode(newMode)}
+              onNewTopic={resetToNewTopic}
+            />
+
+            {/* Mode Content: Flashcards vs Quiz */}
+            {mode === 'flashcards' ? (
+              <FlashcardView
+                cards={studyPlan.flashcards}
+                onTakeQuiz={() => setMode('quiz')}
+                onNewTopic={resetToNewTopic}
+              />
+            ) : (
+              <QuizView
+                questions={studyPlan.quiz.questions}
+                onReviewFlashcards={() => setMode('flashcards')}
+                onNewTopic={resetToNewTopic}
+              />
+            )}
+          </div>
+        )}
       </main>
 
       {/* Footer */}
-      <footer
-        style={{
-          borderTop: '1px solid var(--border-subtle)',
-          padding: '20px',
-          textAlign: 'center',
-          fontSize: '0.78rem',
-          color: 'var(--text-dim)',
-          background: 'rgba(10, 13, 20, 0.9)',
-        }}
-      >
-        <p>
-          VoyageAI • Flam Frontend Engineering Assignment • Built with React 19, TypeScript, and Defensive Structured JSON Parsing
-        </p>
+      <footer className="w-full border-t border-[var(--border-subtle)] bg-[var(--surface-glass)] py-6 mt-auto">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--muted)]">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-[var(--foreground)]">StudyAI</span>
+            <span>•</span>
+            <span>Turn your notes into interactive learning</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="text-[11px] text-[var(--muted-dark)]">
+              Strict Structured JSON & Runtime Zod Schema
+            </span>
+          </div>
+        </div>
       </footer>
     </div>
   );
 };
+
+export default App;
