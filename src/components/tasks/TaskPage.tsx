@@ -117,8 +117,8 @@ export const TaskPage: React.FC = () => {
               onClick={() => setFilter(item.key)}
               className={`px-3 py-1.5 rounded-lg font-semibold shrink-0 transition-all ${
                 filter === item.key
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'text-[var(--muted)] hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
+                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 font-bold shadow-sm'
+                  : 'text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)]'
               }`}
             >
               {item.label}

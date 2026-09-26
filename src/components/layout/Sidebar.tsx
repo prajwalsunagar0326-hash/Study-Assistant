@@ -96,7 +96,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="flex items-center gap-2.5 overflow-hidden">
             <div
               onClick={() => handleSelectTab('dashboard')}
-              className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[var(--primary)] via-[var(--secondary)] to-[var(--accent-cyan)] flex items-center justify-center shadow-md shadow-[var(--primary-glow)] shrink-0 cursor-pointer"
+              className="w-9 h-9 rounded-xl bg-gradient-to-tr from-slate-300 via-white to-slate-200 text-slate-950 flex items-center justify-center shadow-md shadow-white/10 shrink-0 cursor-pointer border border-white/40"
               title="StudyAI - Home"
               role="button"
               tabIndex={0}
@@ -105,7 +105,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 if (e.key === 'Enter' || e.key === ' ') handleSelectTab('dashboard');
               }}
             >
-              <GraduationCap className="w-5 h-5 text-white" />
+              <GraduationCap className="w-5 h-5 text-slate-950" />
             </div>
             <AnimatePresence>
               {!isCollapsed && (
@@ -120,7 +120,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <span className="font-extrabold text-lg tracking-tight text-[var(--foreground)]">
                       Study<span className="gradient-text">AI</span>
                     </span>
-                    <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-[var(--primary)]/15 text-[var(--primary-light)] border border-[var(--primary)]/30">
+                    <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-[var(--surface-muted)] text-[var(--foreground)] border border-[var(--border)]">
                       PRO
                     </span>
                   </div>
@@ -149,16 +149,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Streak Indicator Banner */}
         {!isCollapsed ? (
-          <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
+          <div className="p-2.5 rounded-xl bg-slate-100/10 dark:bg-white/5 border border-slate-300/20 dark:border-white/10 flex items-center justify-between">
             <div className="flex items-center gap-2 min-w-0">
-              <div className="w-6 h-6 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+              <div className="w-6 h-6 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-500 shrink-0">
                 <Flame className="w-3.5 h-3.5 animate-pulse" />
               </div>
               <div className="min-w-0">
-                <div className="text-xs font-bold text-amber-700 dark:text-amber-300 truncate">
+                <div className="text-xs font-bold text-[var(--foreground)] truncate">
                   {studyStreak} Day{studyStreak === 1 ? '' : 's'} Streak
                 </div>
-                <div className="text-[9px] text-slate-500 dark:text-[var(--muted)] truncate">
+                <div className="text-[9px] text-[var(--muted)] truncate">
                   {studyStreak > 0 ? 'Consistency active' : 'Study today to start'}
                 </div>
               </div>
@@ -166,7 +166,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         ) : (
           <div
-            className="flex flex-col items-center justify-center p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 cursor-pointer"
+            className="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-100/10 dark:bg-white/5 border border-slate-300/20 dark:border-white/10 cursor-pointer"
             title={`${studyStreak} Day Streak`}
             onClick={() => handleSelectTab('profile')}
             role="button"
@@ -177,7 +177,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             }}
           >
             <Flame className="w-4 h-4 text-amber-500 animate-pulse" />
-            <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 mt-0.5">
+            <span className="text-[10px] font-bold text-[var(--foreground)] mt-0.5">
               {studyStreak}d
             </span>
           </div>
@@ -204,7 +204,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   isCollapsed ? 'justify-center px-0' : 'justify-between px-3'
                 } py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all group ${
                   isActive
-                    ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30'
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 font-bold shadow-md shadow-black/20 dark:shadow-white/10'
                     : 'text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)]'
                 }`}
               >
@@ -212,7 +212,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <span
                     className={`${
                       isActive
-                        ? 'text-white'
+                        ? 'text-white dark:text-slate-950'
                         : 'text-[var(--muted)] group-hover:text-[var(--foreground)]'
                     }`}
                   >
@@ -225,7 +225,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <span
                     className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full border ${
                       isActive
-                        ? 'bg-white/20 text-white border-white/30'
+                        ? 'bg-white/20 text-white dark:bg-black/15 dark:text-slate-950 border-transparent'
                         : item.badgeColor ||
                           'bg-[var(--surface-muted)] text-[var(--muted)] border-[var(--border)]'
                     }`}
@@ -250,12 +250,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
             isCollapsed ? 'justify-center p-2' : 'justify-between p-2'
           } rounded-xl border text-left transition-all ${
             activeTab === 'profile'
-              ? 'bg-indigo-50 dark:bg-indigo-950/60 border-indigo-500/50 text-indigo-950 dark:text-white ring-1 ring-indigo-500/20'
-              : 'bg-[var(--surface-muted)] border-[var(--border)] hover:border-slate-300 dark:hover:border-slate-600 text-[var(--foreground)]'
+              ? 'bg-[var(--surface-hover)] border-[var(--border-focus)] text-[var(--foreground)]'
+              : 'bg-[var(--surface-muted)] border-[var(--border)] hover:border-slate-400 dark:hover:border-slate-600 text-[var(--foreground)]'
           }`}
         >
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-xs font-extrabold text-white shrink-0 shadow-sm">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-slate-300 via-white to-slate-200 text-slate-950 flex items-center justify-center text-xs font-extrabold shrink-0 shadow-sm border border-white/30">
               {profile.avatarInitials || 'ST'}
             </div>
             {!isCollapsed && (

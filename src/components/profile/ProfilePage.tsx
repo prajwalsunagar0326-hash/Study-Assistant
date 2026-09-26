@@ -80,7 +80,7 @@ export const ProfilePage: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left">
             {/* Avatar Initials */}
             <div className="relative group shrink-0">
-              <div className="w-20 h-20 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-2xl font-extrabold shadow-lg shadow-indigo-600/20 border border-white/20">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-slate-300 via-white to-slate-200 text-slate-950 flex items-center justify-center text-2xl font-extrabold shadow-lg shadow-white/10 border border-white/40">
                 {profile.avatarInitials || 'ST'}
               </div>
               <div
@@ -97,11 +97,11 @@ export const ProfilePage: React.FC = () => {
                 <h1 className="text-xl sm:text-2xl font-extrabold text-[var(--foreground)]">
                   {profile.name}
                 </h1>
-                <span className="px-2 py-0.5 text-[11px] font-semibold rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+                <span className="px-2 py-0.5 text-[11px] font-semibold rounded-full bg-[var(--surface-muted)] text-[var(--foreground)] border border-[var(--border)]">
                   Student Learner
                 </span>
-                <span className="px-2 py-0.5 text-[11px] font-semibold rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center gap-1">
-                  <Flame className="w-3 h-3 fill-current" />
+                <span className="px-2 py-0.5 text-[11px] font-semibold rounded-full bg-slate-100/10 dark:bg-white/10 text-[var(--foreground)] border border-slate-300/20 dark:border-white/15 flex items-center gap-1">
+                  <Flame className="w-3 h-3 text-amber-500 fill-current" />
                   {studyStreak} Day Streak
                 </span>
               </div>

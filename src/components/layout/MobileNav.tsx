@@ -54,7 +54,7 @@ export const MobileNav: React.FC = () => {
                 onClick={() => handleTabClick('calendar')}
                 className={`p-3.5 rounded-xl border flex items-center gap-3 text-left transition-all ${
                   activeTab === 'calendar'
-                    ? 'bg-indigo-600 text-white border-indigo-500'
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 border border-slate-700 dark:border-white/40 font-bold'
                     : 'bg-[var(--surface-muted)] border-[var(--border)] text-[var(--foreground)]'
                 }`}
               >
@@ -67,7 +67,7 @@ export const MobileNav: React.FC = () => {
                 onClick={() => handleTabClick('bookmarks')}
                 className={`p-3.5 rounded-xl border flex items-center gap-3 text-left transition-all ${
                   activeTab === 'bookmarks'
-                    ? 'bg-indigo-600 text-white border-indigo-500'
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 border border-slate-700 dark:border-white/40 font-bold'
                     : 'bg-[var(--surface-muted)] border-[var(--border)] text-[var(--foreground)]'
                 }`}
               >
@@ -87,7 +87,7 @@ export const MobileNav: React.FC = () => {
                 onClick={() => handleTabClick('profile')}
                 className={`col-span-2 p-3.5 rounded-xl border flex items-center gap-3 text-left transition-all ${
                   activeTab === 'profile'
-                    ? 'bg-indigo-600 text-white border-indigo-500'
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 border border-slate-700 dark:border-white/40 font-bold'
                     : 'bg-[var(--surface-muted)] border-[var(--border)] text-[var(--foreground)]'
                 }`}
               >
@@ -108,7 +108,7 @@ export const MobileNav: React.FC = () => {
           type="button"
           onClick={() => handleTabClick('dashboard')}
           className={`flex flex-col items-center gap-1 py-1 px-3 rounded-lg text-[10px] font-semibold transition-all ${
-            activeTab === 'dashboard' ? 'text-indigo-400' : 'text-[var(--muted)]'
+            activeTab === 'dashboard' ? 'text-[var(--foreground)] font-bold' : 'text-[var(--muted)]'
           }`}
         >
           <LayoutDashboard className="w-4 h-4" />
@@ -119,10 +119,10 @@ export const MobileNav: React.FC = () => {
           type="button"
           onClick={() => handleTabClick('study')}
           className={`flex flex-col items-center gap-1 py-1 px-3 rounded-lg text-[10px] font-semibold transition-all ${
-            activeTab === 'study' ? 'text-indigo-400' : 'text-[var(--muted)]'
+            activeTab === 'study' ? 'text-[var(--foreground)] font-bold' : 'text-[var(--muted)]'
           }`}
         >
-          <Sparkles className="w-4 h-4 text-indigo-400" />
+          <Sparkles className="w-4 h-4" />
           <span>Study</span>
         </button>
 
@@ -130,7 +130,7 @@ export const MobileNav: React.FC = () => {
           type="button"
           onClick={() => handleTabClick('tasks')}
           className={`relative flex flex-col items-center gap-1 py-1 px-3 rounded-lg text-[10px] font-semibold transition-all ${
-            activeTab === 'tasks' ? 'text-indigo-400' : 'text-[var(--muted)]'
+            activeTab === 'tasks' ? 'text-[var(--foreground)] font-bold' : 'text-[var(--muted)]'
           }`}
         >
           <CheckSquare className="w-4 h-4" />

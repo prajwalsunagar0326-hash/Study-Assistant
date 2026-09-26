@@ -8,12 +8,16 @@ interface ModeSelectorProps {
   disabled?: boolean;
 }
 
-export const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onChange, disabled }) => {
+export const ModeSelector: React.FC<ModeSelectorProps> = ({
+  mode,
+  onChange,
+  disabled = false,
+}) => {
   return (
     <div
       role="radiogroup"
-      aria-label="Study Generation Mode"
-      className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"
+      aria-label="Study Mode Selection"
+      className="grid grid-cols-1 sm:grid-cols-2 gap-3"
     >
       {/* Flashcards Option */}
       <button
@@ -24,15 +28,15 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onChange, disa
         onClick={() => onChange('flashcards')}
         className={`hover-lift glass-stroke-border flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all group ${
           mode === 'flashcards'
-            ? 'bg-indigo-50/90 dark:bg-indigo-950/40 border-indigo-500 shadow-md shadow-indigo-500/15 ring-1 ring-indigo-500/30'
-            : 'bg-[var(--surface-muted)] border-[var(--border)] hover:border-indigo-400/60 dark:hover:border-indigo-500/40 hover:bg-[var(--surface-hover)]'
+            ? 'bg-slate-100/80 dark:bg-white/10 border-slate-400 dark:border-white/40 shadow-md shadow-black/10 dark:shadow-white/5 ring-1 ring-white/20'
+            : 'bg-[var(--surface-muted)] border-[var(--border)] hover:border-slate-400 dark:hover:border-slate-500 hover:bg-[var(--surface-hover)]'
         } ${disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
       >
         <div
           className={`p-2 rounded-lg transition-all duration-300 group-hover:scale-105 ${
             mode === 'flashcards'
-              ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-              : 'bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:text-indigo-400'
+              ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-md shadow-black/15 dark:shadow-white/10'
+              : 'bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:text-[var(--foreground)]'
           }`}
         >
           <Layers className="w-4 h-4" />
@@ -40,10 +44,10 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onChange, disa
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
             <span
-              className={`font-semibold text-xs sm:text-sm ${
+              className={`text-xs sm:text-sm ${
                 mode === 'flashcards'
-                  ? 'text-indigo-950 dark:text-white'
-                  : 'text-slate-800 dark:text-slate-200 group-hover:text-[var(--foreground)]'
+                  ? 'text-[var(--foreground)] font-bold'
+                  : 'font-semibold text-slate-800 dark:text-slate-200 group-hover:text-[var(--foreground)]'
               }`}
             >
               Interactive Flashcards
@@ -64,15 +68,15 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onChange, disa
         onClick={() => onChange('quiz')}
         className={`hover-lift glass-stroke-border flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all group ${
           mode === 'quiz'
-            ? 'bg-indigo-50/90 dark:bg-indigo-950/40 border-indigo-500 shadow-md shadow-indigo-500/15 ring-1 ring-indigo-500/30'
-            : 'bg-[var(--surface-muted)] border-[var(--border)] hover:border-indigo-400/60 dark:hover:border-indigo-500/40 hover:bg-[var(--surface-hover)]'
+            ? 'bg-slate-100/80 dark:bg-white/10 border-slate-400 dark:border-white/40 shadow-md shadow-black/10 dark:shadow-white/5 ring-1 ring-white/20'
+            : 'bg-[var(--surface-muted)] border-[var(--border)] hover:border-slate-400 dark:hover:border-slate-500 hover:bg-[var(--surface-hover)]'
         } ${disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
       >
         <div
           className={`p-2 rounded-lg transition-all duration-300 group-hover:scale-105 ${
             mode === 'quiz'
-              ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-              : 'bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:text-indigo-400'
+              ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-md shadow-black/15 dark:shadow-white/10'
+              : 'bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:text-[var(--foreground)]'
           }`}
         >
           <CircleHelp className="w-4 h-4" />
@@ -80,17 +84,17 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onChange, disa
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
             <span
-              className={`font-semibold text-xs sm:text-sm ${
+              className={`text-xs sm:text-sm ${
                 mode === 'quiz'
-                  ? 'text-indigo-950 dark:text-white'
-                  : 'text-slate-800 dark:text-slate-200 group-hover:text-[var(--foreground)]'
+                  ? 'text-[var(--foreground)] font-bold'
+                  : 'font-semibold text-slate-800 dark:text-slate-200 group-hover:text-[var(--foreground)]'
               }`}
             >
-              Interactive Quiz
+              Diagnostic Knowledge Quiz
             </span>
           </div>
           <p className="text-[11px] text-slate-500 dark:text-[var(--muted)] truncate mt-0.5">
-            Timed knowledge assessment with instant feedback
+            Multiple-choice test with immediate rationale feedback
           </p>
         </div>
       </button>

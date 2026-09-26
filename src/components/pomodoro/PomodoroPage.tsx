@@ -238,7 +238,7 @@ export const PomodoroPage: React.FC = () => {
             onClick={() => switchMode('longBreak')}
             className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
               mode === 'longBreak'
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-md'
                 : 'text-slate-600 dark:text-[var(--muted)] hover:text-slate-900 dark:hover:text-white'
             }`}
           >
