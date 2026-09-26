@@ -21,7 +21,6 @@ import { FlashcardView } from './components/study/FlashcardView';
 import { QuizView } from './components/study/QuizView';
 import { LoadingState } from './components/states/LoadingState';
 import { ErrorState } from './components/states/ErrorState';
-import { EmptyState } from './components/states/EmptyState';
 
 import { useStudyGeneration } from './hooks/useStudyGeneration';
 import { useReducedMotion } from './hooks/useReducedMotion';
@@ -171,27 +170,31 @@ const AppContent: React.FC = () => {
         />
 
         {/* View Body based on activeTab */}
-        <main className="flex-1 w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
+        <main
+          className={`flex-1 w-full mx-auto px-4 sm:px-6 lg:px-8 ${
+            activeTab === 'study' ? 'py-2 sm:py-3 flex flex-col justify-center' : 'py-5 sm:py-6'
+          }`}
+        >
           {activeTab === 'dashboard' && (
             <Dashboard onLoadStudyPlan={handleLoadStudyPlan} />
           )}
 
           {activeTab === 'study' && (
-            <div className="w-full max-w-6xl mx-auto space-y-6">
+            <div className="w-full max-w-4xl mx-auto space-y-3">
               {/* If no study plan has been generated yet, show the Hero and Input Area */}
               {!studyPlan && !isLoading && !error && (
-                <div className="space-y-8">
+                <div className="space-y-3">
                   {/* Hero Section */}
-                  <div ref={heroRef} className="text-center space-y-3 pt-2 sm:pt-4">
-                    <div className="hero-element inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-xs font-semibold text-indigo-700 dark:text-indigo-300">
-                      <ShieldCheck className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                  <div ref={heroRef} className="text-center space-y-1">
+                    <div className="hero-element inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-[10px] font-semibold text-indigo-700 dark:text-indigo-300">
+                      <ShieldCheck className="w-3 h-3 text-indigo-600 dark:text-indigo-400" />
                       <span>Non-Chatbot Structured Learning Engine</span>
                     </div>
-                    <h1 className="hero-element text-3xl sm:text-5xl font-extrabold tracking-tight text-[var(--foreground)]">
+                    <h1 className="hero-element text-xl sm:text-3xl font-extrabold tracking-tight text-[var(--foreground)]">
                       Study smarter. <span className="gradient-text">Learn faster.</span>
                     </h1>
-                    <p className="hero-element text-sm sm:text-base text-[var(--muted)] max-w-xl mx-auto leading-relaxed">
-                      Paste your notes or enter a topic. StudyAI turns them into interactive flashcards or a quiz in seconds.
+                    <p className="hero-element text-xs text-[var(--muted)] max-w-lg mx-auto leading-relaxed">
+                      Paste notes or enter a topic to generate interactive flashcards or a quiz in seconds.
                     </p>
                   </div>
 
@@ -204,9 +207,6 @@ const AppContent: React.FC = () => {
                       defaultMode={mode}
                     />
                   </div>
-
-                  {/* Empty State Features */}
-                  <EmptyState />
                 </div>
               )}
 
@@ -261,21 +261,23 @@ const AppContent: React.FC = () => {
           {activeTab === 'profile' && <ProfilePage />}
         </main>
 
-        {/* Global Footer */}
-        <footer className="w-full border-t border-[var(--border-subtle)] bg-[var(--surface-glass)] py-6 mt-auto">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--muted)]">
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-[var(--foreground)]">StudyAI</span>
-              <span>•</span>
-              <span>Turn your notes into interactive learning</span>
+        {/* Global Footer (hidden on active study creator to fit screen without scrolling) */}
+        {activeTab !== 'study' && (
+          <footer className="w-full border-t border-[var(--border-subtle)] bg-[var(--surface-glass)] py-6 mt-auto">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--muted)]">
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-[var(--foreground)]">StudyAI</span>
+                <span>•</span>
+                <span>Turn your notes into interactive learning</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="text-[11px] text-[var(--muted-dark)]">
+                  Strict Structured JSON & Runtime Zod Schema • Client-Side Productivity
+                </span>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="text-[11px] text-[var(--muted-dark)]">
-                Strict Structured JSON & Runtime Zod Schema • Client-Side Productivity
-              </span>
-            </div>
-          </div>
-        </footer>
+          </footer>
+        )}
       </div>
 
       {/* Mobile Bottom Navigation (fixed on small viewports, lg:hidden) */}
