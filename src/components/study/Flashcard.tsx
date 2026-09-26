@@ -50,7 +50,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({
   };
 
   return (
-    <div className="w-full max-w-xl mx-auto flashcard-perspective select-none">
+    <div className="w-full max-w-3xl mx-auto flashcard-perspective select-none">
       <div
         tabIndex={0}
         role="button"

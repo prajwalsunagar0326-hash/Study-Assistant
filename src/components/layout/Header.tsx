@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Bug, Sun, Moon, Flame } from 'lucide-react';
+import { Search, Bug, Sun, Moon, Flame, Menu } from 'lucide-react';
 import { useProductivity } from '../../context/ProductivityContext';
 
 interface HeaderProps {
@@ -15,6 +15,7 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleDiagnostic,
   theme,
   onToggleTheme,
+  onOpenMobileMenu,
 }) => {
   const { activeTab, setIsSearchOpen, studyStreak } = useProductivity();
 
@@ -41,14 +42,25 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="w-full border-b border-[var(--border-subtle)] bg-[var(--surface)] backdrop-blur-xl sticky top-0 z-30 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-        {/* Current View Breadcrumb */}
-        <div className="flex items-center gap-3">
-          <div className="flex flex-col">
-            <h1 className="text-base sm:text-lg font-bold text-[var(--foreground)] tracking-tight">
+      <div className="w-full px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+        {/* Left: Mobile hamburger & Current View Breadcrumb */}
+        <div className="flex items-center gap-3 min-w-0">
+          {onOpenMobileMenu && (
+            <button
+              type="button"
+              onClick={onOpenMobileMenu}
+              aria-label="Open Navigation Menu"
+              className="lg:hidden p-1.5 rounded-lg border border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-muted)] transition-colors"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          )}
+
+          <div className="flex flex-col min-w-0">
+            <h1 className="text-sm sm:text-base font-bold text-[var(--foreground)] tracking-tight truncate">
               {getTabTitle()}
             </h1>
-            <span className="text-[11px] text-[var(--muted)] hidden sm:inline">
+            <span className="text-[10px] text-[var(--muted)] hidden sm:inline truncate">
               Active Learning & Student Productivity
             </span>
           </div>

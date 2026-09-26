@@ -38,6 +38,14 @@ const AppContent: React.FC = () => {
     return 'dark';
   });
 
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('studyai-sidebar-collapsed') === 'true';
+    }
+    return false;
+  });
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isDiagnosticOpen, setIsDiagnosticOpen] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
@@ -68,6 +76,14 @@ const AppContent: React.FC = () => {
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
+  const toggleSidebarCollapse = () => {
+    setIsSidebarCollapsed((prev) => {
+      const next = !prev;
+      localStorage.setItem('studyai-sidebar-collapsed', String(next));
+      return next;
+    });
   };
 
   // GSAP Entrance animation on first load (400-800ms)
@@ -105,33 +121,63 @@ const AppContent: React.FC = () => {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen flex bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300 antialiased"
+      className="min-h-screen flex bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300 antialiased relative"
     >
-      {/* Desktop Sidebar (hidden on mobile, fixed desktop left) */}
-      <Sidebar
-        theme={theme}
-        onToggleTheme={toggleTheme}
-        className="hidden lg:flex"
-      />
+      {/* Desktop Sidebar (Fixed left navigation) */}
+      <div className="hidden lg:block fixed inset-y-0 left-0 z-40">
+        <Sidebar
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={toggleSidebarCollapse}
+        />
+      </div>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 pb-20 lg:pb-0 overflow-y-auto">
+      {/* Slide-in Mobile Drawer */}
+      {isMobileMenuOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm lg:hidden animate-fade-in"
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
+          <div
+            className="w-64 h-full bg-[var(--surface)] shadow-2xl relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Sidebar
+              theme={theme}
+              onToggleTheme={toggleTheme}
+              isCollapsed={false}
+              onNavigate={() => setIsMobileMenuOpen(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Main Content Area (Scrollable body with fixed sidebar offset) */}
+      <div
+        className={`flex-1 flex flex-col min-w-0 transition-[margin-left] duration-300 ease-in-out ${
+          isSidebarCollapsed ? 'lg:ml-[72px]' : 'lg:ml-60'
+        } pb-16 lg:pb-0 overflow-y-auto min-h-screen`}
+      >
         {/* Top Header */}
         <Header
           isDiagnosticOpen={isDiagnosticOpen}
           onToggleDiagnostic={() => setIsDiagnosticOpen((prev) => !prev)}
           theme={theme}
           onToggleTheme={toggleTheme}
+          onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
         />
 
         {/* View Body based on activeTab */}
-        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <main className="flex-1 w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
           {activeTab === 'dashboard' && (
             <Dashboard onLoadStudyPlan={handleLoadStudyPlan} />
           )}
 
           {activeTab === 'study' && (
-            <div className="max-w-5xl mx-auto space-y-8">
+            <div className="w-full max-w-6xl mx-auto space-y-6">
               {/* If no study plan has been generated yet, show the Hero and Input Area */}
               {!studyPlan && !isLoading && !error && (
                 <div className="space-y-8">

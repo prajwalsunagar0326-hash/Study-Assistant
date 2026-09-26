@@ -332,7 +332,7 @@ export const PomodoroPage: React.FC = () => {
       {/* Focus Session Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="glass-panel p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-rose-500/15 text-rose-500 dark:text-rose-400 border border-rose-500/30 shrink-0">
+          <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border border-slate-200 dark:border-slate-700 shrink-0">
             <TimerIcon className="w-5 h-5" />
           </div>
           <div>
@@ -346,7 +346,7 @@ export const PomodoroPage: React.FC = () => {
         </div>
 
         <div className="glass-panel p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-amber-500/15 text-amber-500 dark:text-amber-400 border border-amber-500/30 shrink-0">
+          <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border border-slate-200 dark:border-slate-700 shrink-0">
             <CheckCircle className="w-5 h-5" />
           </div>
           <div>
@@ -360,7 +360,7 @@ export const PomodoroPage: React.FC = () => {
         </div>
 
         <div className="glass-panel p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-emerald-500/15 text-emerald-500 dark:text-emerald-400 border border-emerald-500/30 shrink-0">
+          <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border border-slate-200 dark:border-slate-700 shrink-0">
             <Coffee className="w-5 h-5" />
           </div>
           <div>

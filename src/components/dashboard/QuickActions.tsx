@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, CheckSquare, Calendar, Timer, Bookmark } from 'lucide-react';
+import { Sparkles, CheckSquare, Calendar, Timer, Bookmark, ArrowRight } from 'lucide-react';
 import { useProductivity } from '../../context/ProductivityContext';
 
 export const QuickActions: React.FC = () => {
@@ -9,64 +9,66 @@ export const QuickActions: React.FC = () => {
     {
       label: 'AI Study Set',
       description: 'Generate 3D flashcards & quiz',
-      icon: <Sparkles className="w-5 h-5 text-indigo-400" />,
-      color: 'bg-indigo-500/15 border-indigo-500/30 hover:border-indigo-400',
+      icon: <Sparkles className="w-4 h-4 text-indigo-400" />,
       tab: 'study' as const,
     },
     {
       label: 'Add New Task',
       description: 'Organize study deliverables',
-      icon: <CheckSquare className="w-5 h-5 text-amber-400" />,
-      color: 'bg-amber-500/15 border-amber-500/30 hover:border-amber-400',
+      icon: <CheckSquare className="w-4 h-4 text-indigo-400" />,
       tab: 'tasks' as const,
     },
     {
       label: 'Schedule Study',
       description: 'Plan exams & deadlines',
-      icon: <Calendar className="w-5 h-5 text-emerald-400" />,
-      color: 'bg-emerald-500/15 border-emerald-500/30 hover:border-emerald-400',
+      icon: <Calendar className="w-4 h-4 text-indigo-400" />,
       tab: 'calendar' as const,
     },
     {
       label: 'Start Pomodoro',
-      description: '25-minute deep focus block',
-      icon: <Timer className="w-5 h-5 text-rose-400" />,
-      color: 'bg-rose-500/15 border-rose-500/30 hover:border-rose-400',
+      description: '25-minute focus session',
+      icon: <Timer className="w-4 h-4 text-indigo-400" />,
       tab: 'pomodoro' as const,
     },
     {
       label: 'Saved Bookmarks',
-      description: 'Review key insights',
-      icon: <Bookmark className="w-5 h-5 text-purple-400" />,
-      color: 'bg-purple-500/15 border-purple-500/30 hover:border-purple-400',
+      description: 'Review saved insights',
+      icon: <Bookmark className="w-4 h-4 text-indigo-400" />,
       tab: 'bookmarks' as const,
     },
   ];
 
   return (
-    <div className="space-y-3">
-      <div className="text-xs font-bold uppercase tracking-wider text-[var(--muted)]">
-        Quick Learning Actions
+    <div className="glass-panel p-4 sm:p-5 space-y-3 h-full flex flex-col">
+      <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)]">
+        <h3 className="font-bold text-xs sm:text-sm text-[var(--foreground)]">
+          Quick Actions
+        </h3>
+        <span className="text-[10px] text-[var(--muted)]">Productivity Tools</span>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+
+      <div className="space-y-2 flex-1 flex flex-col justify-between">
         {ACTIONS.map((act) => (
           <button
             key={act.label}
             type="button"
             onClick={() => setActiveTab(act.tab)}
-            className={`p-4 rounded-xl border text-left flex flex-col justify-between gap-3 transition-all hover:translate-y-[-2px] hover:shadow-lg ${act.color} bg-[var(--surface)] group`}
+            className="w-full p-2.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-muted)] hover:bg-[var(--surface-hover)] hover:border-indigo-500/40 text-left flex items-center justify-between gap-3 transition-all group"
           >
-            <div className="p-2 rounded-lg bg-slate-900/60 border border-white/5 w-fit group-hover:scale-110 transition-transform">
-              {act.icon}
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-7 h-7 rounded-lg bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform text-indigo-400">
+                {act.icon}
+              </div>
+              <div className="min-w-0">
+                <h4 className="text-xs font-semibold text-[var(--foreground)] group-hover:text-indigo-400 transition-colors truncate">
+                  {act.label}
+                </h4>
+                <p className="text-[10px] text-[var(--muted)] truncate">
+                  {act.description}
+                </p>
+              </div>
             </div>
-            <div>
-              <h4 className="text-xs sm:text-sm font-bold text-white group-hover:text-indigo-200 transition-colors">
-                {act.label}
-              </h4>
-              <p className="text-[11px] text-[var(--muted)] line-clamp-1 mt-0.5">
-                {act.description}
-              </p>
-            </div>
+            <ArrowRight className="w-3.5 h-3.5 text-[var(--muted)] group-hover:text-indigo-400 group-hover:translate-x-0.5 transition-all shrink-0" />
           </button>
         ))}
       </div>

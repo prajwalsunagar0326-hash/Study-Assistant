@@ -89,49 +89,49 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLoadStudyPlan }) => {
       </div>
 
       {/* Quick Statistics Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatsCard
           label="Tasks Completed"
           value={`${completedTasksCount} / ${tasks.length}`}
           subtext={`${tasks.length - completedTasksCount} pending deliverables`}
-          icon={<CheckSquare className="w-5 h-5 text-amber-400" />}
-          iconColor="bg-amber-500/15 border border-amber-500/30"
+          icon={<CheckSquare className="w-4 h-4 text-indigo-400" />}
           badge={tasks.length > 0 ? `${Math.round((completedTasksCount / tasks.length) * 100)}%` : undefined}
         />
         <StatsCard
           label="Study Sessions"
           value={statistics.pomodoroSessions + statistics.quizAttempts}
           subtext={`${statistics.pomodoroSessions} pomodoros • ${statistics.quizAttempts} quizzes`}
-          icon={<Timer className="w-5 h-5 text-rose-400" />}
-          iconColor="bg-rose-500/15 border border-rose-500/30"
+          icon={<Timer className="w-4 h-4 text-indigo-400" />}
           badge="Total"
         />
         <StatsCard
           label="Study Streak"
           value={`${studyStreak} Days`}
           subtext="Daily active recall habit"
-          icon={<Flame className="w-5 h-5 text-amber-400" />}
-          iconColor="bg-amber-500/15 border border-amber-500/30"
+          icon={<Flame className="w-4 h-4 text-amber-400" />}
           badge={studyStreak > 0 ? 'Active' : 'Start Today'}
         />
         <StatsCard
           label="Quiz Accuracy"
           value={statistics.totalAnswers > 0 ? `${quizAccuracy}%` : 'N/A'}
-          subtext={`${statistics.correctAnswers} of ${statistics.totalAnswers} answered correctly`}
-          icon={<Award className="w-5 h-5 text-emerald-400" />}
-          iconColor="bg-emerald-500/15 border border-emerald-500/30"
+          subtext={`${statistics.correctAnswers} of ${statistics.totalAnswers} correct`}
+          icon={<Award className="w-4 h-4 text-emerald-400" />}
           badge="Retention"
         />
       </div>
 
-      {/* Quick Actions Bar */}
-      <QuickActions />
-
-      {/* Today's Schedule & Priority Tasks */}
-      <TodayPlan />
+      {/* Main Focus: 2/3 Today's Plan + 1/3 Quick Actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-stretch">
+        <div className="lg:col-span-2">
+          <TodayPlan />
+        </div>
+        <div className="lg:col-span-1">
+          <QuickActions />
+        </div>
+      </div>
 
       {/* Two Column Section: Saved Study Sets & Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Saved Study Sets Library */}
         <div className="glass-panel p-5 sm:p-6 space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)]">
@@ -214,7 +214,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLoadStudyPlan }) => {
         <div className="glass-panel p-5 sm:p-6 space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)]">
             <div className="flex items-center gap-2">
-              <History className="w-4 h-4 text-purple-500 dark:text-purple-400" />
+              <History className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
               <h3 className="font-bold text-sm sm:text-base text-[var(--foreground)]">
                 Recent Activity
               </h3>
@@ -233,7 +233,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLoadStudyPlan }) => {
                   key={act.id}
                   className="p-3 rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] flex items-start gap-3 text-xs"
                 >
-                  <div className="w-7 h-7 rounded-lg bg-indigo-500/15 border border-indigo-500/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 mt-0.5">
                     <Clock className="w-3.5 h-3.5" />
                   </div>
                   <div className="flex-1 min-w-0">

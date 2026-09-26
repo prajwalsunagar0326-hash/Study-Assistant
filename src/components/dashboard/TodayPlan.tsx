@@ -129,7 +129,7 @@ export const TodayPlan: React.FC = () => {
                   key={ev.id}
                   className="p-3 rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] flex items-start gap-3"
                 >
-                  <div className="p-2 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 shrink-0 text-center min-w-[50px]">
+                  <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 shrink-0 text-center min-w-[52px]">
                     <span className="text-[11px] font-bold block">{ev.startTime || 'All Day'}</span>
                   </div>
 

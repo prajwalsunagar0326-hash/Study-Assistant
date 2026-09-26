@@ -22,25 +22,25 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onChange, disa
         aria-checked={mode === 'flashcards'}
         disabled={disabled}
         onClick={() => onChange('flashcards')}
-        className={`relative flex items-start gap-3.5 p-4 rounded-xl border text-left transition-all ${
+        className={`flex items-center gap-3 p-3 rounded-xl border text-left transition-all ${
           mode === 'flashcards'
-            ? 'bg-indigo-50/90 dark:bg-gradient-to-br dark:from-indigo-950/60 dark:to-slate-900/80 border-indigo-500 shadow-lg shadow-indigo-500/10 ring-1 ring-indigo-500/30'
-            : 'bg-[var(--surface-muted)] border-[var(--border)] hover:border-slate-300 dark:hover:border-slate-600/50'
+            ? 'bg-indigo-50/90 dark:bg-indigo-950/40 border-indigo-500 shadow-sm ring-1 ring-indigo-500/20'
+            : 'bg-[var(--surface-muted)] border-[var(--border)] hover:border-slate-400 dark:hover:border-slate-600'
         } ${disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
       >
         <div
-          className={`p-2.5 rounded-lg transition-colors ${
+          className={`p-2 rounded-lg transition-colors ${
             mode === 'flashcards'
-              ? 'bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30'
-              : 'bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400'
+              ? 'bg-indigo-600 text-white shadow-sm'
+              : 'bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
           }`}
         >
-          <Layers className="w-5 h-5" />
+          <Layers className="w-4 h-4" />
         </div>
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
             <span
-              className={`font-semibold text-sm ${
+              className={`font-semibold text-xs sm:text-sm ${
                 mode === 'flashcards'
                   ? 'text-indigo-950 dark:text-white'
                   : 'text-slate-800 dark:text-slate-200'
@@ -48,12 +48,9 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onChange, disa
             >
               Interactive Flashcards
             </span>
-            {mode === 'flashcards' && (
-              <span className="w-2 h-2 rounded-full bg-indigo-500 dark:bg-indigo-400 animate-ping" />
-            )}
           </div>
-          <p className="text-xs text-slate-500 dark:text-[var(--muted)] mt-0.5">
-            Review concepts with 3D flip cards & memory triggers.
+          <p className="text-[11px] text-slate-500 dark:text-[var(--muted)] truncate mt-0.5">
+            Active recall with 3D flip cards & memory triggers
           </p>
         </div>
       </button>
@@ -65,38 +62,35 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onChange, disa
         aria-checked={mode === 'quiz'}
         disabled={disabled}
         onClick={() => onChange('quiz')}
-        className={`relative flex items-start gap-3.5 p-4 rounded-xl border text-left transition-all ${
+        className={`flex items-center gap-3 p-3 rounded-xl border text-left transition-all ${
           mode === 'quiz'
-            ? 'bg-violet-50/90 dark:bg-gradient-to-br dark:from-violet-950/60 dark:to-slate-900/80 border-violet-500 shadow-lg shadow-violet-500/10 ring-1 ring-violet-500/30'
-            : 'bg-[var(--surface-muted)] border-[var(--border)] hover:border-slate-300 dark:hover:border-slate-600/50'
+            ? 'bg-indigo-50/90 dark:bg-indigo-950/40 border-indigo-500 shadow-sm ring-1 ring-indigo-500/20'
+            : 'bg-[var(--surface-muted)] border-[var(--border)] hover:border-slate-400 dark:hover:border-slate-600'
         } ${disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
       >
         <div
-          className={`p-2.5 rounded-lg transition-colors ${
+          className={`p-2 rounded-lg transition-colors ${
             mode === 'quiz'
-              ? 'bg-violet-500/20 text-violet-600 dark:text-violet-400 border border-violet-500/30'
-              : 'bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400'
+              ? 'bg-indigo-600 text-white shadow-sm'
+              : 'bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
           }`}
         >
-          <CircleHelp className="w-5 h-5" />
+          <CircleHelp className="w-4 h-4" />
         </div>
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
             <span
-              className={`font-semibold text-sm ${
+              className={`font-semibold text-xs sm:text-sm ${
                 mode === 'quiz'
-                  ? 'text-violet-950 dark:text-white'
+                  ? 'text-indigo-950 dark:text-white'
                   : 'text-slate-800 dark:text-slate-200'
               }`}
             >
               Interactive Quiz
             </span>
-            {mode === 'quiz' && (
-              <span className="w-2 h-2 rounded-full bg-violet-500 dark:bg-violet-400 animate-ping" />
-            )}
           </div>
-          <p className="text-xs text-slate-500 dark:text-[var(--muted)] mt-0.5">
-            Test your understanding with instant feedback & scoring.
+          <p className="text-[11px] text-slate-500 dark:text-[var(--muted)] truncate mt-0.5">
+            Timed knowledge assessment with instant feedback
           </p>
         </div>
       </button>

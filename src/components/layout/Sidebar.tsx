@@ -18,6 +18,8 @@ import { NavigationTab } from '../../types/productivity';
 interface SidebarProps {
   theme: 'dark' | 'light';
   onToggleTheme: () => void;
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
   className?: string;
   onNavigate?: () => void;
 }
@@ -25,6 +27,8 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({
   theme,
   onToggleTheme,
+  isCollapsed = false,
+  onToggleCollapse,
   className = '',
   onNavigate,
 }) => {
@@ -42,37 +46,37 @@ export const Sidebar: React.FC<SidebarProps> = ({
     {
       tab: 'dashboard',
       label: 'Dashboard',
-      icon: <LayoutDashboard className="w-4 h-4" />,
+      icon: <LayoutDashboard className="w-4 h-4 shrink-0" />,
     },
     {
       tab: 'study',
       label: 'AI Study Workspace',
-      icon: <Sparkles className="w-4 h-4 text-indigo-400" />,
+      icon: <Sparkles className="w-4 h-4 text-indigo-400 shrink-0" />,
       badge: 'AI',
       badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
     },
     {
       tab: 'tasks',
       label: 'Tasks & To-Dos',
-      icon: <CheckSquare className="w-4 h-4" />,
+      icon: <CheckSquare className="w-4 h-4 shrink-0" />,
       badge: activeTaskCount > 0 ? activeTaskCount : undefined,
       badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
     },
     {
       tab: 'calendar',
       label: 'Study Calendar',
-      icon: <CalendarDays className="w-4 h-4" />,
+      icon: <CalendarDays className="w-4 h-4 shrink-0" />,
     },
     {
       tab: 'bookmarks',
       label: 'Saved Bookmarks',
-      icon: <Bookmark className="w-4 h-4" />,
+      icon: <Bookmark className="w-4 h-4 shrink-0" />,
       badge: bookmarks.length > 0 ? bookmarks.length : undefined,
     },
     {
       tab: 'pomodoro',
       label: 'Pomodoro Timer',
-      icon: <Timer className="w-4 h-4" />,
+      icon: <Timer className="w-4 h-4 shrink-0" />,
     },
   ];
 
@@ -83,49 +87,95 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <aside
-      className={`w-64 h-full bg-[var(--surface)] border-r border-[var(--border-subtle)] backdrop-blur-xl flex flex-col justify-between p-4 transition-colors select-none ${className}`}
+      className={`h-screen bg-[var(--surface)] border-r border-[var(--border-subtle)] backdrop-blur-xl flex flex-col justify-between p-3 transition-[width] duration-300 ease-in-out select-none ${
+        isCollapsed ? 'w-[72px]' : 'w-60'
+      } ${className}`}
     >
-      {/* Top Branding */}
-      <div className="space-y-6">
-        <div className="flex items-center gap-3 px-2 pt-1">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[var(--primary)] via-[var(--secondary)] to-[var(--accent-cyan)] flex items-center justify-center shadow-lg shadow-[var(--primary-glow)] shrink-0">
-            <GraduationCap className="w-5 h-5 text-white" />
-          </div>
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-xl tracking-tight text-[var(--foreground)]">
-                Study<span className="gradient-text">AI</span>
-              </span>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[var(--primary)]/15 text-[var(--primary-light)] border border-[var(--primary)]/30">
-                PRO
-              </span>
+      {/* Top Section */}
+      <div className="space-y-4">
+        {/* Branding & Collapse Toggle */}
+        <div
+          className={`flex items-center ${
+            isCollapsed ? 'flex-col gap-2 justify-center' : 'justify-between px-1'
+          } pt-1 pb-1`}
+        >
+          <div className="flex items-center gap-2.5">
+            <div
+              onClick={() => handleSelectTab('dashboard')}
+              className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[var(--primary)] via-[var(--secondary)] to-[var(--accent-cyan)] flex items-center justify-center shadow-md shadow-[var(--primary-glow)] shrink-0 cursor-pointer"
+              title="StudyAI - Home"
+            >
+              <GraduationCap className="w-5 h-5 text-white" />
             </div>
-            <span className="text-[11px] text-[var(--muted)]">Student Workspace</span>
+            {!isCollapsed && (
+              <div className="flex flex-col">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-extrabold text-lg tracking-tight text-[var(--foreground)]">
+                    Study<span className="gradient-text">AI</span>
+                  </span>
+                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-[var(--primary)]/15 text-[var(--primary-light)] border border-[var(--primary)]/30">
+                    PRO
+                  </span>
+                </div>
+                <span className="text-[10px] text-[var(--muted)]">Student Workspace</span>
+              </div>
+            )}
           </div>
+
+          {onToggleCollapse && (
+            <button
+              type="button"
+              onClick={onToggleCollapse}
+              aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              className="p-1.5 rounded-lg border border-[var(--border)] hover:bg-[var(--surface-hover)] text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+            >
+              <ChevronRight
+                className={`w-4 h-4 transition-transform duration-200 ${
+                  isCollapsed ? '' : 'rotate-180'
+                }`}
+              />
+            </button>
+          )}
         </div>
 
         {/* Streak Indicator Banner */}
-        <div className="p-3 rounded-xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-transparent border border-amber-500/25 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-600 dark:text-amber-400">
-              <Flame className="w-4 h-4 animate-pulse" />
-            </div>
-            <div>
-              <div className="text-xs font-bold text-amber-700 dark:text-amber-300">
-                {studyStreak} Day{studyStreak === 1 ? '' : 's'} Streak
+        {!isCollapsed ? (
+          <div className="p-2.5 rounded-xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-transparent border border-amber-500/20 flex items-center justify-between">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-6 h-6 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+                <Flame className="w-3.5 h-3.5 animate-pulse" />
               </div>
-              <div className="text-[10px] text-slate-500 dark:text-[var(--muted)]">
-                {studyStreak > 0 ? 'Consistency unlocked!' : 'Complete study to start'}
+              <div className="min-w-0">
+                <div className="text-xs font-bold text-amber-700 dark:text-amber-300 truncate">
+                  {studyStreak} Day{studyStreak === 1 ? '' : 's'} Streak
+                </div>
+                <div className="text-[9px] text-slate-500 dark:text-[var(--muted)] truncate">
+                  {studyStreak > 0 ? 'Consistency unlocked' : 'Study today to start'}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div
+            className="flex flex-col items-center justify-center p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 cursor-pointer"
+            title={`${studyStreak} Day Streak`}
+            onClick={() => handleSelectTab('profile')}
+          >
+            <Flame className="w-4 h-4 text-amber-500 animate-pulse" />
+            <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 mt-0.5">
+              {studyStreak}d
+            </span>
+          </div>
+        )}
 
         {/* Primary Navigation Menu */}
         <nav className="space-y-1" aria-label="Main Navigation">
-          <div className="px-2 pb-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">
-            Main Menu
-          </div>
+          {!isCollapsed && (
+            <div className="px-2 pb-1 text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">
+              Main Menu
+            </div>
+          )}
           {NAV_ITEMS.map((item) => {
             const isActive = activeTab === item.tab;
             return (
@@ -133,25 +183,35 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 key={item.tab}
                 type="button"
                 onClick={() => handleSelectTab(item.tab)}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all group ${
+                title={isCollapsed ? item.label : undefined}
+                className={`w-full flex items-center ${
+                  isCollapsed ? 'justify-center px-0' : 'justify-between px-3'
+                } py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all group ${
                   isActive
-                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                    ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30'
                     : 'text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)]'
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  <span className={`${isActive ? 'text-white' : 'text-[var(--muted)] group-hover:text-[var(--foreground)]'}`}>
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <span
+                    className={`${
+                      isActive
+                        ? 'text-white'
+                        : 'text-[var(--muted)] group-hover:text-[var(--foreground)]'
+                    }`}
+                  >
                     {item.icon}
                   </span>
-                  <span>{item.label}</span>
+                  {!isCollapsed && <span className="truncate">{item.label}</span>}
                 </div>
 
-                {item.badge !== undefined && (
+                {!isCollapsed && item.badge !== undefined && (
                   <span
-                    className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full border ${
+                    className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full border ${
                       isActive
                         ? 'bg-white/20 text-white border-white/30'
-                        : item.badgeColor || 'bg-[var(--surface-muted)] text-[var(--muted)] border-[var(--border)]'
+                        : item.badgeColor ||
+                          'bg-[var(--surface-muted)] text-[var(--muted)] border-[var(--border)]'
                     }`}
                   >
                     {item.badge}
@@ -164,43 +224,57 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Bottom Profile & Theme Section */}
-      <div className="space-y-3 pt-4 border-t border-[var(--border-subtle)]">
+      <div className="space-y-2 pt-3 border-t border-[var(--border-subtle)]">
         {/* Profile Card Button */}
         <button
           type="button"
           onClick={() => handleSelectTab('profile')}
-          className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-left transition-all ${
+          title={isCollapsed ? profile.name : undefined}
+          className={`w-full flex items-center ${
+            isCollapsed ? 'justify-center p-2' : 'justify-between p-2'
+          } rounded-xl border text-left transition-all ${
             activeTab === 'profile'
               ? 'bg-indigo-50 dark:bg-indigo-950/60 border-indigo-500/50 text-indigo-950 dark:text-white ring-1 ring-indigo-500/20'
               : 'bg-[var(--surface-muted)] border-[var(--border)] hover:border-slate-300 dark:hover:border-slate-600 text-[var(--foreground)]'
           }`}
         >
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-xs font-extrabold text-white shrink-0 shadow-sm">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-xs font-extrabold text-white shrink-0 shadow-sm">
               {profile.avatarInitials || 'ST'}
             </div>
-            <div className="min-w-0">
-              <div className="text-xs font-bold truncate text-[var(--foreground)]">
-                {profile.name}
+            {!isCollapsed && (
+              <div className="min-w-0">
+                <div className="text-xs font-bold truncate text-[var(--foreground)]">
+                  {profile.name}
+                </div>
+                <div className="text-[10px] text-[var(--muted)] truncate">
+                  {profile.studyGoal || 'Student'}
+                </div>
               </div>
-              <div className="text-[10px] text-[var(--muted)] truncate">
-                {profile.studyGoal || 'Student'}
-              </div>
-            </div>
+            )}
           </div>
-          <ChevronRight className="w-4 h-4 text-[var(--muted)] shrink-0" />
+          {!isCollapsed && <ChevronRight className="w-3.5 h-3.5 text-[var(--muted)] shrink-0" />}
         </button>
 
-        {/* Theme and Mode Bar */}
-        <div className="flex items-center justify-between px-2 pt-1 text-xs text-[var(--muted)]">
-          <span>Theme Mode</span>
+        {/* Theme Toggle */}
+        <div
+          className={`flex items-center ${
+            isCollapsed ? 'justify-center' : 'justify-between px-1'
+          } text-xs text-[var(--muted)]`}
+        >
+          {!isCollapsed && <span>Theme Mode</span>}
           <button
             type="button"
             onClick={onToggleTheme}
             aria-label="Toggle Theme"
+            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
             className="p-1.5 rounded-lg border border-[var(--border)] hover:bg-[var(--surface-hover)] text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
           >
-            {theme === 'dark' ? <Sun className="w-3.5 h-3.5 text-amber-400" /> : <Moon className="w-3.5 h-3.5 text-indigo-400" />}
+            {theme === 'dark' ? (
+              <Sun className="w-3.5 h-3.5 text-amber-400" />
+            ) : (
+              <Moon className="w-3.5 h-3.5 text-indigo-400" />
+            )}
           </button>
         </div>
       </div>

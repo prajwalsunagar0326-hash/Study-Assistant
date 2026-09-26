@@ -68,10 +68,10 @@ export const StudyInput: React.FC<StudyInputProps> = ({
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto space-y-6">
+    <div className="w-full space-y-5">
       {/* Mode Selector */}
-      <div className="space-y-2">
-        <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
+      <div className="space-y-1.5">
+        <label className="block text-[11px] font-bold uppercase tracking-wider text-[var(--muted)]">
           Select Study Mode
         </label>
         <ModeSelector mode={mode} onChange={setMode} disabled={isLoading} />
@@ -79,10 +79,10 @@ export const StudyInput: React.FC<StudyInputProps> = ({
 
       {/* Main Input Form */}
       <form onSubmit={handleSubmit} className="glass-panel p-5 sm:p-6 space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between pb-1 border-b border-[var(--border-subtle)]">
           <label
             htmlFor="study-material-input"
-            className="text-sm font-semibold text-[var(--foreground)] flex items-center gap-2"
+            className="text-xs sm:text-sm font-semibold text-[var(--foreground)] flex items-center gap-2"
           >
             <Sparkles className="w-4 h-4 text-indigo-400" />
             <span>Enter Notes or Topic</span>
@@ -104,22 +104,22 @@ export const StudyInput: React.FC<StudyInputProps> = ({
           <textarea
             id="study-material-input"
             ref={textareaRef}
-            rows={5}
+            rows={6}
             value={prompt}
             onChange={handleTextChange}
             disabled={isLoading}
-            placeholder="Paste your notes, lecture content, or enter a topic (e.g. Java OOP, Machine Learning, Normalization)..."
-            className="w-full bg-[var(--background-secondary)] text-[var(--foreground)] border border-[var(--border)] focus:border-indigo-500 rounded-xl p-4 text-sm sm:text-base leading-relaxed placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all resize-y min-h-[140px] max-h-[360px]"
+            placeholder="Paste your lecture notes, textbook excerpts, or enter a subject topic (e.g. Java OOP Polymorphism, Database Normalization BCNF, Process Scheduling)..."
+            className="w-full bg-[var(--background-secondary)] text-[var(--foreground)] border border-[var(--border)] focus:border-indigo-500 rounded-xl p-4 text-sm sm:text-base leading-relaxed placeholder:text-[var(--muted)] focus:outline-none focus:ring-1 focus:ring-indigo-500/30 transition-all resize-y min-h-[160px] max-h-[400px]"
           />
           <div className="flex items-center justify-between mt-1.5 px-1">
             <span
               className={`text-xs ${
-                charsRemaining < 200 ? 'text-amber-400' : 'text-[var(--muted)]'
+                charsRemaining < 200 ? 'text-amber-500 font-semibold' : 'text-[var(--muted)]'
               }`}
             >
               {charsRemaining} characters left
             </span>
-            <span className="text-[11px] text-[var(--muted-dark)] hidden sm:inline">
+            <span className="text-[11px] text-[var(--muted)] hidden sm:inline">
               Max {MAX_CHARS} chars • Markdown / plain text supported
             </span>
           </div>
@@ -127,21 +127,22 @@ export const StudyInput: React.FC<StudyInputProps> = ({
 
         {/* Validation Error Message */}
         {validationError && (
-          <div className="flex items-center gap-2 p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs animate-shake">
-            <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+          <div className="flex items-center gap-2 p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300 text-xs animate-shake">
+            <AlertCircle className="w-4 h-4 shrink-0 text-rose-500 dark:text-rose-400" />
             <span>{validationError}</span>
           </div>
         )}
 
-        {/* Example Topics */}
-        <ExamplePrompts onSelectPrompt={handleSelectExample} disabled={isLoading} />
+        {/* Bottom Actions Row: Inspiration + Generate CTA */}
+        <div className="pt-2 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div className="flex-1">
+            <ExamplePrompts onSelectPrompt={handleSelectExample} disabled={isLoading} />
+          </div>
 
-        {/* Primary CTA */}
-        <div className="pt-2 flex flex-col sm:flex-row items-center gap-3 justify-end">
           <button
             type="submit"
             disabled={isLoading || prompt.trim().length === 0}
-            className="btn-primary w-full sm:w-auto"
+            className="btn-primary w-full md:w-auto px-6 py-3 shrink-0"
           >
             {isLoading ? (
               <>

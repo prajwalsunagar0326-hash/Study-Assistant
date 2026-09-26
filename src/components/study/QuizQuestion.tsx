@@ -52,7 +52,7 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
   const isCorrect = (opt: string) => opt.trim() === question.correctAnswer.trim();
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-6">
+    <div className="w-full max-w-3xl mx-auto space-y-6">
       {/* Question Card */}
       <div className="glass-panel p-6 sm:p-8 space-y-6">
         {/* Meta / Difficulty Header */}

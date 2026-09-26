@@ -132,7 +132,7 @@ export const FlashcardView: React.FC<FlashcardViewProps> = ({
   const progressPercent = Math.round(((currentIndex + 1) / totalCards) * 100);
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-6">
+    <div className="w-full max-w-3xl mx-auto space-y-6">
       {/* Progress Header */}
       <div className="space-y-2">
         <div className="flex items-center justify-between text-xs font-semibold text-[var(--muted)]">
@@ -177,7 +177,7 @@ export const FlashcardView: React.FC<FlashcardViewProps> = ({
         <button
           type="button"
           onClick={handleFlip}
-          className="btn-secondary text-xs sm:text-sm px-5 py-2.5 border-indigo-500/40 text-indigo-300 hover:text-white"
+          className="btn-secondary text-xs sm:text-sm px-5 py-2.5 border-indigo-500/40 text-indigo-600 dark:text-indigo-300 hover:text-indigo-700 dark:hover:text-white"
         >
           <RefreshCw className="w-4 h-4" />
           <span>Flip Card (Space)</span>
