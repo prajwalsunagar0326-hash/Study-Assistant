@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Sparkles, Wand2, X, AlertCircle, ShieldAlert, WifiOff } from 'lucide-react';
+import { Sparkles, Wand2, X, AlertCircle } from 'lucide-react';
 import { StudyMode } from '../../types/study';
 import { ModeSelector } from './ModeSelector';
 import { ExamplePrompts } from './ExamplePrompts';
@@ -7,14 +7,12 @@ import { ExamplePrompts } from './ExamplePrompts';
 interface StudyInputProps {
   onGenerate: (prompt: string, mode: StudyMode) => void;
   isLoading: boolean;
-  isDiagnosticOpen: boolean;
   defaultMode?: StudyMode;
 }
 
 export const StudyInput: React.FC<StudyInputProps> = ({
   onGenerate,
   isLoading,
-  isDiagnosticOpen,
   defaultMode = 'flashcards',
 }) => {
   const [prompt, setPrompt] = useState<string>('');
@@ -51,7 +49,7 @@ export const StudyInput: React.FC<StudyInputProps> = ({
     e.preventDefault();
 
     const trimmed = prompt.trim();
-    if (!trimmed) {
+    if (trimmed.length === 0) {
       setValidationError('Add a topic or some notes to get started.');
       textareaRef.current?.focus();
       return;
@@ -59,12 +57,6 @@ export const StudyInput: React.FC<StudyInputProps> = ({
 
     setValidationError(null);
     onGenerate(trimmed, mode);
-  };
-
-  // Interviewer Diagnostic Quick Triggers
-  const handleSimulate = (diagnosticFlag: string) => {
-    setValidationError(null);
-    onGenerate(`Topic for Testing ${diagnosticFlag}`, mode);
   };
 
   return (
@@ -78,71 +70,75 @@ export const StudyInput: React.FC<StudyInputProps> = ({
       </div>
 
       {/* Main Input Form */}
-      <form onSubmit={handleSubmit} className="glass-panel p-5 sm:p-6 space-y-3.5">
-        <div className="flex items-center justify-between pb-1.5 border-b border-[var(--border-subtle)]">
-          <label
-            htmlFor="study-material-input"
-            className="text-xs sm:text-sm font-semibold text-[var(--foreground)] flex items-center gap-2"
-          >
-            <Sparkles className="w-4 h-4 text-indigo-400" />
-            <span>Enter Notes or Topic</span>
-          </label>
-          {prompt.length > 0 && !isLoading && (
-            <button
-              type="button"
-              onClick={handleClear}
-              className="text-xs text-[var(--muted)] hover:text-rose-400 flex items-center gap-1 transition-colors"
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <div className="relative">
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <label
+                htmlFor="study-prompt-input"
+                className="text-xs font-semibold text-[var(--foreground)]"
+              >
+                Topic or Notes
+              </label>
+              {prompt.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleClear}
+                  disabled={isLoading}
+                  className="text-xs text-[var(--muted)] hover:text-[var(--foreground)] flex items-center gap-1 transition-colors"
+                >
+                  <X className="w-3 h-3" />
+                  <span>Clear</span>
+                </button>
+              )}
+            </div>
+
+            <div className="relative rounded-2xl border border-[var(--border)] bg-[var(--surface-glass)] backdrop-blur-xl focus-within:border-indigo-500/60 focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all">
+              <textarea
+                id="study-prompt-input"
+                ref={textareaRef}
+                value={prompt}
+                onChange={handleTextChange}
+                disabled={isLoading}
+                placeholder="Paste lecture notes, study guides, textbook paragraphs, or simply type a topic (e.g. 'Operating Systems Deadlock Prevention')..."
+                rows={5}
+                className="w-full bg-transparent p-4 text-xs sm:text-sm text-[var(--foreground)] placeholder:text-[var(--muted-dark)] focus:outline-none resize-none leading-relaxed"
+                aria-invalid={validationError ? 'true' : 'false'}
+                aria-describedby={validationError ? 'input-error' : undefined}
+              />
+
+              {/* Bottom bar inside textarea box */}
+              <div className="flex items-center justify-between px-4 py-2 border-t border-[var(--border-subtle)] text-[11px] text-[var(--muted)]">
+                <span className={charsRemaining < 100 ? 'text-amber-500 font-medium' : ''}>
+                  {charsRemaining.toLocaleString()} characters left
+                </span>
+                <span>Structured AI Study Generator</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Validation error message */}
+          {validationError && (
+            <div
+              id="input-error"
+              role="alert"
+              className="mt-2 flex items-center gap-1.5 text-xs text-rose-500 dark:text-rose-400"
             >
-              <X className="w-3.5 h-3.5" />
-              <span>Clear</span>
-            </button>
+              <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+              <span>{validationError}</span>
+            </div>
           )}
         </div>
 
-        {/* Textarea Container */}
-        <div className="relative">
-          <textarea
-            id="study-material-input"
-            ref={textareaRef}
-            rows={5}
-            value={prompt}
-            onChange={handleTextChange}
-            disabled={isLoading}
-            placeholder="Paste your lecture notes, textbook excerpts, or enter a subject topic (e.g. Java OOP Polymorphism, Database Normalization BCNF, Process Scheduling)..."
-            className="w-full bg-[var(--background-secondary)] text-[var(--foreground)] border border-[var(--border)] focus:border-indigo-500 rounded-xl p-4 text-sm sm:text-base leading-relaxed placeholder:text-[var(--muted)] focus:outline-none focus:ring-1 focus:ring-indigo-500/30 transition-all resize-y min-h-[130px] sm:min-h-[150px] max-h-[280px]"
-          />
-          <div className="flex items-center justify-between mt-1.5 px-1">
-            <span
-              className={`text-xs ${
-                charsRemaining < 200 ? 'text-amber-500 font-semibold' : 'text-[var(--muted)]'
-              }`}
-            >
-              {charsRemaining} characters left
-            </span>
-            <span className="text-[11px] text-[var(--muted)] hidden sm:inline">
-              Max {MAX_CHARS} chars • Markdown / plain text supported
-            </span>
-          </div>
-        </div>
+        {/* Example prompts */}
+        <ExamplePrompts onSelectPrompt={handleSelectExample} disabled={isLoading} />
 
-        {/* Validation Error Message */}
-        {validationError && (
-          <div className="flex items-center gap-2 p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300 text-xs animate-shake">
-            <AlertCircle className="w-4 h-4 shrink-0 text-rose-500 dark:text-rose-400" />
-            <span>{validationError}</span>
-          </div>
-        )}
-
-        {/* Bottom Actions Row: Inspiration + Generate CTA */}
-        <div className="pt-1.5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex-1">
-            <ExamplePrompts onSelectPrompt={handleSelectExample} disabled={isLoading} />
-          </div>
-
+        {/* Submit button */}
+        <div className="flex items-center justify-end pt-1">
           <button
             type="submit"
             disabled={isLoading || prompt.trim().length === 0}
-            className="btn-primary w-full md:w-auto px-6 py-3 shrink-0 text-sm font-semibold shadow-lg shadow-indigo-500/25"
+            className="btn-primary w-full sm:w-auto text-xs sm:text-sm px-6 py-2.5 shadow-md shadow-indigo-500/20"
           >
             {isLoading ? (
               <>
@@ -158,48 +154,6 @@ export const StudyInput: React.FC<StudyInputProps> = ({
           </button>
         </div>
       </form>
-
-      {/* Live Interviewer Diagnostic Panel */}
-      {isDiagnosticOpen && (
-        <div className="p-4 rounded-xl border border-indigo-500/40 bg-indigo-950/20 backdrop-blur-md space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-indigo-300">
-              <ShieldAlert className="w-4 h-4 text-indigo-400" />
-              <span>Interviewer Diagnostic Mode (Failure Simulation)</span>
-            </div>
-            <span className="text-[11px] text-slate-400">Assignment Section 21 Verification</span>
-          </div>
-          <p className="text-xs text-slate-300">
-            Click any button below to trigger and inspect StudyAI's defensive parsing, runtime validation, and error recovery states live:
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <button
-              type="button"
-              onClick={() => handleSimulate('__test_malformed__')}
-              className="flex items-center justify-center gap-1.5 p-2 rounded-lg bg-slate-900/80 border border-amber-500/40 text-amber-300 hover:bg-amber-950/30 text-xs font-medium transition-colors"
-            >
-              <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
-              <span>1. Malformed JSON</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleSimulate('__test_wrong_shape__')}
-              className="flex items-center justify-center gap-1.5 p-2 rounded-lg bg-slate-900/80 border border-orange-500/40 text-orange-300 hover:bg-orange-950/30 text-xs font-medium transition-colors"
-            >
-              <ShieldAlert className="w-3.5 h-3.5 text-orange-400" />
-              <span>2. Wrong Schema Shape</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleSimulate('__test_error_500__')}
-              className="flex items-center justify-center gap-1.5 p-2 rounded-lg bg-slate-900/80 border border-rose-500/40 text-rose-300 hover:bg-rose-950/30 text-xs font-medium transition-colors"
-            >
-              <WifiOff className="w-3.5 h-3.5 text-rose-400" />
-              <span>3. Server 500 Error</span>
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

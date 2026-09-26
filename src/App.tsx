@@ -24,14 +24,20 @@ import { ErrorState } from './components/states/ErrorState';
 
 import { useStudyGeneration } from './hooks/useStudyGeneration';
 import { useReducedMotion } from './hooks/useReducedMotion';
+import { useScrollReveal } from './hooks/useScrollReveal';
+import { useLenis } from './hooks/useLenis';
+import { StudyAIStorage } from './lib/storage';
 import { StudyMode, StudyPlan } from './types/study';
 import { ShieldCheck } from 'lucide-react';
 
 const AppContent: React.FC = () => {
+  // Initialize Lenis smooth desktop scrolling (disabled on touch & reduced motion)
+  useLenis();
+
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('studyai-theme');
-      if (saved === 'dark' || saved === 'light') return saved;
+      const prefs = StudyAIStorage.getPreferences();
+      if (prefs.theme === 'dark' || prefs.theme === 'light') return prefs.theme;
       if (window.matchMedia('(prefers-color-scheme: light)').matches) return 'light';
     }
     return 'dark';
@@ -39,13 +45,12 @@ const AppContent: React.FC = () => {
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('studyai-sidebar-collapsed') === 'true';
+      return StudyAIStorage.getSidebarState();
     }
     return false;
   });
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-  const [isDiagnosticOpen, setIsDiagnosticOpen] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
@@ -66,11 +71,11 @@ const AppContent: React.FC = () => {
     setStudyPlan,
   } = useStudyGeneration();
 
-  // Synchronize theme with HTML document attribute and dark class
+  // Synchronize theme with HTML document attribute, dark class, and storage
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     document.documentElement.classList.toggle('dark', theme === 'dark');
-    localStorage.setItem('studyai-theme', theme);
+    StudyAIStorage.setPreferences({ theme });
   }, [theme]);
 
   const toggleTheme = () => {
@@ -80,7 +85,7 @@ const AppContent: React.FC = () => {
   const toggleSidebarCollapse = () => {
     setIsSidebarCollapsed((prev) => {
       const next = !prev;
-      localStorage.setItem('studyai-sidebar-collapsed', String(next));
+      StudyAIStorage.setSidebarState(next);
       return next;
     });
   };
@@ -108,6 +113,9 @@ const AppContent: React.FC = () => {
     { scope: containerRef, dependencies: [prefersReducedMotion, activeTab] }
   );
 
+  // Scroll reveal observer for silky smooth entrance on view change & scroll
+  useScrollReveal(activeTab);
+
   const handleGenerate = (promptText: string, selectedMode: StudyMode) => {
     generate(promptText, selectedMode);
   };
@@ -122,11 +130,9 @@ const AppContent: React.FC = () => {
       ref={containerRef}
       className="min-h-screen flex bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300 antialiased relative"
     >
-      {/* Desktop Sidebar (Fixed left navigation) */}
+      {/* Desktop Sidebar (Fixed left navigation per Section 21) */}
       <div className="hidden lg:block fixed inset-y-0 left-0 z-40">
         <Sidebar
-          theme={theme}
-          onToggleTheme={toggleTheme}
           isCollapsed={isSidebarCollapsed}
           onToggleCollapse={toggleSidebarCollapse}
         />
@@ -145,8 +151,6 @@ const AppContent: React.FC = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <Sidebar
-              theme={theme}
-              onToggleTheme={toggleTheme}
               isCollapsed={false}
               onNavigate={() => setIsMobileMenuOpen(false)}
             />
@@ -160,10 +164,8 @@ const AppContent: React.FC = () => {
           isSidebarCollapsed ? 'lg:ml-[72px]' : 'lg:ml-60'
         } pb-16 lg:pb-0 overflow-y-auto min-h-screen`}
       >
-        {/* Top Header */}
+        {/* Top Header with unified single theme toggle */}
         <Header
-          isDiagnosticOpen={isDiagnosticOpen}
-          onToggleDiagnostic={() => setIsDiagnosticOpen((prev) => !prev)}
           theme={theme}
           onToggleTheme={toggleTheme}
           onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
@@ -203,7 +205,6 @@ const AppContent: React.FC = () => {
                     <StudyInput
                       onGenerate={handleGenerate}
                       isLoading={isLoading}
-                      isDiagnosticOpen={isDiagnosticOpen}
                       defaultMode={mode}
                     />
                   </div>

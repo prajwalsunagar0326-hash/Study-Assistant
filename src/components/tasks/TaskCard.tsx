@@ -56,10 +56,10 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   return (
     <div
-      className={`glass-panel p-4 flex items-start justify-between gap-3 transition-all ${
+      className={`glass-panel hover-lift glass-stroke-border p-4 flex items-start justify-between gap-3 transition-all ${
         task.completed
           ? 'opacity-60 bg-slate-950/40 border-slate-850'
-          : 'hover:border-slate-600 bg-[var(--surface-muted)]'
+          : 'hover:border-indigo-500/50 bg-[var(--surface-muted)] hover:shadow-lg hover:shadow-indigo-500/10'
       }`}
     >
       <div className="flex items-start gap-3.5 flex-1 min-w-0">

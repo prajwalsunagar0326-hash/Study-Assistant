@@ -17,9 +17,12 @@ export const StatsCard: React.FC<StatsCardProps> = ({
   badge,
 }) => {
   return (
-    <div className="glass-panel p-4 sm:p-5 space-y-2.5 relative overflow-hidden transition-all hover:translate-y-[-1px] hover:border-indigo-500/40">
-      <div className="flex items-center justify-between">
-        <div className="w-8 h-8 rounded-lg bg-[var(--surface-muted)] border border-[var(--border)] flex items-center justify-center shrink-0 text-slate-700 dark:text-slate-300">
+    <div className="glass-panel hover-lift glass-stroke-border p-4 sm:p-5 space-y-2.5 relative overflow-hidden group cursor-default transition-all duration-300 hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/10">
+      {/* Subtle hover gradient reflection */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/0 via-indigo-500/0 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+      <div className="flex items-center justify-between relative z-10">
+        <div className="w-8 h-8 rounded-lg bg-[var(--surface-muted)] border border-[var(--border)] group-hover:border-indigo-500/40 group-hover:scale-105 flex items-center justify-center shrink-0 text-slate-700 dark:text-slate-300 transition-all duration-300">
           {icon}
         </div>
         {badge && (

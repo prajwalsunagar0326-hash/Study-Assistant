@@ -22,17 +22,17 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onChange, disa
         aria-checked={mode === 'flashcards'}
         disabled={disabled}
         onClick={() => onChange('flashcards')}
-        className={`flex items-center gap-3 p-3 rounded-xl border text-left transition-all ${
+        className={`hover-lift glass-stroke-border flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all group ${
           mode === 'flashcards'
-            ? 'bg-indigo-50/90 dark:bg-indigo-950/40 border-indigo-500 shadow-sm ring-1 ring-indigo-500/20'
-            : 'bg-[var(--surface-muted)] border-[var(--border)] hover:border-slate-400 dark:hover:border-slate-600'
+            ? 'bg-indigo-50/90 dark:bg-indigo-950/40 border-indigo-500 shadow-md shadow-indigo-500/15 ring-1 ring-indigo-500/30'
+            : 'bg-[var(--surface-muted)] border-[var(--border)] hover:border-indigo-400/60 dark:hover:border-indigo-500/40 hover:bg-[var(--surface-hover)]'
         } ${disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
       >
         <div
-          className={`p-2 rounded-lg transition-colors ${
+          className={`p-2 rounded-lg transition-all duration-300 group-hover:scale-105 ${
             mode === 'flashcards'
-              ? 'bg-indigo-600 text-white shadow-sm'
-              : 'bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+              ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+              : 'bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:text-indigo-400'
           }`}
         >
           <Layers className="w-4 h-4" />
@@ -43,7 +43,7 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onChange, disa
               className={`font-semibold text-xs sm:text-sm ${
                 mode === 'flashcards'
                   ? 'text-indigo-950 dark:text-white'
-                  : 'text-slate-800 dark:text-slate-200'
+                  : 'text-slate-800 dark:text-slate-200 group-hover:text-[var(--foreground)]'
               }`}
             >
               Interactive Flashcards
@@ -62,17 +62,17 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onChange, disa
         aria-checked={mode === 'quiz'}
         disabled={disabled}
         onClick={() => onChange('quiz')}
-        className={`flex items-center gap-3 p-3 rounded-xl border text-left transition-all ${
+        className={`hover-lift glass-stroke-border flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all group ${
           mode === 'quiz'
-            ? 'bg-indigo-50/90 dark:bg-indigo-950/40 border-indigo-500 shadow-sm ring-1 ring-indigo-500/20'
-            : 'bg-[var(--surface-muted)] border-[var(--border)] hover:border-slate-400 dark:hover:border-slate-600'
+            ? 'bg-indigo-50/90 dark:bg-indigo-950/40 border-indigo-500 shadow-md shadow-indigo-500/15 ring-1 ring-indigo-500/30'
+            : 'bg-[var(--surface-muted)] border-[var(--border)] hover:border-indigo-400/60 dark:hover:border-indigo-500/40 hover:bg-[var(--surface-hover)]'
         } ${disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
       >
         <div
-          className={`p-2 rounded-lg transition-colors ${
+          className={`p-2 rounded-lg transition-all duration-300 group-hover:scale-105 ${
             mode === 'quiz'
-              ? 'bg-indigo-600 text-white shadow-sm'
-              : 'bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+              ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+              : 'bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:text-indigo-400'
           }`}
         >
           <CircleHelp className="w-4 h-4" />
@@ -83,7 +83,7 @@ export const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onChange, disa
               className={`font-semibold text-xs sm:text-sm ${
                 mode === 'quiz'
                   ? 'text-indigo-950 dark:text-white'
-                  : 'text-slate-800 dark:text-slate-200'
+                  : 'text-slate-800 dark:text-slate-200 group-hover:text-[var(--foreground)]'
               }`}
             >
               Interactive Quiz

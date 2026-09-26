@@ -67,7 +67,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({
         }`}
       >
         {/* Front Face: Question */}
-        <div className="flashcard-face flashcard-front">
+        <div className="flashcard-face flashcard-front glass-stroke-border">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-[var(--muted)]">
             <div className="flex items-center gap-1.5 font-medium">
               <HelpCircle className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
@@ -107,7 +107,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({
         </div>
 
         {/* Back Face: Answer */}
-        <div className="flashcard-face flashcard-back">
+        <div className="flashcard-face flashcard-back glass-stroke-border">
           <div className="flex items-center justify-between text-xs text-slate-500 dark:text-[var(--muted)]">
             <div className="flex items-center gap-1.5 font-medium text-emerald-600 dark:text-emerald-400">
               <CheckCircle2 className="w-4 h-4" />

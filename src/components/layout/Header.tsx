@@ -1,18 +1,14 @@
 import React from 'react';
-import { Bug, Sun, Moon, Flame, Menu } from 'lucide-react';
+import { Sun, Moon, Flame, Menu } from 'lucide-react';
 import { useProductivity } from '../../context/ProductivityContext';
 
 interface HeaderProps {
-  isDiagnosticOpen: boolean;
-  onToggleDiagnostic: () => void;
   theme: 'dark' | 'light';
   onToggleTheme: () => void;
   onOpenMobileMenu?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  isDiagnosticOpen,
-  onToggleDiagnostic,
   theme,
   onToggleTheme,
   onOpenMobileMenu,
@@ -66,38 +62,27 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Action Affordances */}
+        {/* Right: Streak & Unified Theme Toggle */}
         <div className="flex items-center gap-2 sm:gap-3">
-
           {/* Streak indicator on header */}
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-bold text-amber-700 dark:text-amber-300">
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-bold text-amber-700 dark:text-amber-300">
             <Flame className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
             <span>{studyStreak}d Streak</span>
           </div>
 
-          {/* Interviewer Mode Diagnostic Trigger */}
-          <button
-            type="button"
-            onClick={onToggleDiagnostic}
-            aria-label="Toggle Interviewer Diagnostic Mode"
-            className={`btn-ghost text-xs px-2.5 py-1.5 rounded-lg border ${
-              isDiagnosticOpen
-                ? 'border-indigo-500/50 bg-indigo-500/15 text-indigo-300'
-                : 'border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)]'
-            }`}
-          >
-            <Bug className="w-3.5 h-3.5 text-indigo-400" />
-            <span className="hidden sm:inline">Diagnostic</span>
-          </button>
-
-          {/* Theme Toggle */}
+          {/* Single Unified Theme Toggle */}
           <button
             type="button"
             onClick={onToggleTheme}
             aria-label="Toggle Color Theme"
-            className="p-2 rounded-lg text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-muted)] transition-colors"
+            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            className="p-2 rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-hover)] transition-colors"
           >
-            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-400" />}
+            {theme === 'dark' ? (
+              <Sun className="w-4 h-4 text-amber-400" />
+            ) : (
+              <Moon className="w-4 h-4 text-indigo-500" />
+            )}
           </button>
         </div>
       </div>

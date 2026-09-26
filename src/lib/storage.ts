@@ -48,6 +48,10 @@ export function getYesterdayDateString(): string {
   return `${year}-${month}-${day}`;
 }
 
+export function calculateElapsedSeconds(startTimeMs: number, currentTimeMs: number = Date.now()): number {
+  return Math.max(0, Math.floor((currentTimeMs - startTimeMs) / 1000));
+}
+
 export const DEFAULT_STORAGE_STATE: StudyAIStorageState = {
   version: STORAGE_VERSION,
   profile: {
@@ -278,3 +282,86 @@ export function saveStorage(state: StudyAIStorageState): void {
     console.error('[Storage Error] Failed to write to localStorage:', err);
   }
 }
+
+/**
+ * Section 16: Centralized, typed StudyAIStorage persistence utility
+ * Provides unified access to profile, tasks, events, bookmarks, statistics,
+ * pomodoroSettings, sidebarState, and preferences with graceful fallbacks.
+ */
+export const StudyAIStorage = {
+  load: loadStorage,
+  save: saveStorage,
+
+  getProfile: (): StudentProfile => loadStorage().profile,
+  setProfile: (profile: StudentProfile): void => {
+    const s = loadStorage();
+    s.profile = profile;
+    saveStorage(s);
+  },
+
+  getTasks: (): Task[] => loadStorage().tasks,
+  setTasks: (tasks: Task[]): void => {
+    const s = loadStorage();
+    s.tasks = tasks;
+    saveStorage(s);
+  },
+
+  getEvents: (): StudyEvent[] => loadStorage().events,
+  setEvents: (events: StudyEvent[]): void => {
+    const s = loadStorage();
+    s.events = events;
+    saveStorage(s);
+  },
+
+  getBookmarks: (): Bookmark[] => loadStorage().bookmarks,
+  setBookmarks: (bookmarks: Bookmark[]): void => {
+    const s = loadStorage();
+    s.bookmarks = bookmarks;
+    saveStorage(s);
+  },
+
+  getStatistics: (): StudyStatistics => loadStorage().statistics,
+  setStatistics: (statistics: StudyStatistics): void => {
+    const s = loadStorage();
+    s.statistics = statistics;
+    saveStorage(s);
+  },
+
+  getPomodoroSettings: (): PomodoroSettings => loadStorage().pomodoroSettings,
+  setPomodoroSettings: (settings: PomodoroSettings): void => {
+    const s = loadStorage();
+    s.pomodoroSettings = settings;
+    saveStorage(s);
+  },
+
+  getSidebarState: (): boolean => {
+    if (typeof window === 'undefined') return false;
+    try {
+      return localStorage.getItem('studyai-sidebar-collapsed') === 'true';
+    } catch {
+      return false;
+    }
+  },
+  setSidebarState: (collapsed: boolean): void => {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem('studyai-sidebar-collapsed', String(collapsed));
+    } catch {}
+  },
+
+  getPreferences: (): { theme: 'dark' | 'light' } => {
+    if (typeof window === 'undefined') return { theme: 'dark' };
+    try {
+      const saved = localStorage.getItem('studyai-theme');
+      return { theme: saved === 'light' ? 'light' : 'dark' };
+    } catch {
+      return { theme: 'dark' };
+    }
+  },
+  setPreferences: (prefs: { theme: 'dark' | 'light' }): void => {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem('studyai-theme', prefs.theme);
+    } catch {}
+  },
+};

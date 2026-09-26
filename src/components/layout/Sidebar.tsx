@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   LayoutDashboard,
   Sparkles,
@@ -8,16 +9,12 @@ import {
   Timer,
   GraduationCap,
   Flame,
-  Sun,
-  Moon,
   ChevronRight,
 } from 'lucide-react';
 import { useProductivity } from '../../context/ProductivityContext';
 import { NavigationTab } from '../../types/productivity';
 
 interface SidebarProps {
-  theme: 'dark' | 'light';
-  onToggleTheme: () => void;
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
   className?: string;
@@ -25,8 +22,6 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
-  theme,
-  onToggleTheme,
   isCollapsed = false,
   onToggleCollapse,
   className = '',
@@ -84,10 +79,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   return (
-    <aside
-      className={`h-screen bg-[var(--surface)] border-r border-[var(--border-subtle)] backdrop-blur-xl flex flex-col justify-between p-3 transition-[width] duration-300 ease-in-out select-none ${
-        isCollapsed ? 'w-[72px]' : 'w-60'
-      } ${className}`}
+    <motion.aside
+      initial={false}
+      animate={{ width: isCollapsed ? 72 : 240 }}
+      transition={{ duration: 0.25, ease: 'easeInOut' }}
+      className={`h-screen bg-[var(--surface)] border-r border-[var(--border-subtle)] backdrop-blur-xl flex flex-col justify-between p-3 select-none ${className}`}
     >
       {/* Top Section */}
       <div className="space-y-4">
@@ -97,27 +93,41 @@ export const Sidebar: React.FC<SidebarProps> = ({
             isCollapsed ? 'flex-col gap-2 justify-center' : 'justify-between px-1'
           } pt-1 pb-1`}
         >
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 overflow-hidden">
             <div
               onClick={() => handleSelectTab('dashboard')}
               className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[var(--primary)] via-[var(--secondary)] to-[var(--accent-cyan)] flex items-center justify-center shadow-md shadow-[var(--primary-glow)] shrink-0 cursor-pointer"
               title="StudyAI - Home"
+              role="button"
+              tabIndex={0}
+              aria-label="Go to Dashboard"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') handleSelectTab('dashboard');
+              }}
             >
               <GraduationCap className="w-5 h-5 text-white" />
             </div>
-            {!isCollapsed && (
-              <div className="flex flex-col">
-                <div className="flex items-center gap-1.5">
-                  <span className="font-extrabold text-lg tracking-tight text-[var(--foreground)]">
-                    Study<span className="gradient-text">AI</span>
-                  </span>
-                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-[var(--primary)]/15 text-[var(--primary-light)] border border-[var(--primary)]/30">
-                    PRO
-                  </span>
-                </div>
-                <span className="text-[10px] text-[var(--muted)]">Student Workspace</span>
-              </div>
-            )}
+            <AnimatePresence>
+              {!isCollapsed && (
+                <motion.div
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -8 }}
+                  transition={{ duration: 0.15 }}
+                  className="flex flex-col whitespace-nowrap"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-extrabold text-lg tracking-tight text-[var(--foreground)]">
+                      Study<span className="gradient-text">AI</span>
+                    </span>
+                    <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-[var(--primary)]/15 text-[var(--primary-light)] border border-[var(--primary)]/30">
+                      PRO
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-[var(--muted)]">Student Workspace</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {onToggleCollapse && (
@@ -126,7 +136,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onClick={onToggleCollapse}
               aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
               title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-              className="p-1.5 rounded-lg border border-[var(--border)] hover:bg-[var(--surface-hover)] text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+              className="p-1.5 rounded-lg border border-[var(--border)] hover:bg-[var(--surface-hover)] text-[var(--muted)] hover:text-[var(--foreground)] transition-colors shrink-0"
             >
               <ChevronRight
                 className={`w-4 h-4 transition-transform duration-200 ${
@@ -139,7 +149,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Streak Indicator Banner */}
         {!isCollapsed ? (
-          <div className="p-2.5 rounded-xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-transparent border border-amber-500/20 flex items-center justify-between">
+          <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
             <div className="flex items-center gap-2 min-w-0">
               <div className="w-6 h-6 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
                 <Flame className="w-3.5 h-3.5 animate-pulse" />
@@ -149,7 +159,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   {studyStreak} Day{studyStreak === 1 ? '' : 's'} Streak
                 </div>
                 <div className="text-[9px] text-slate-500 dark:text-[var(--muted)] truncate">
-                  {studyStreak > 0 ? 'Consistency unlocked' : 'Study today to start'}
+                  {studyStreak > 0 ? 'Consistency active' : 'Study today to start'}
                 </div>
               </div>
             </div>
@@ -159,6 +169,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
             className="flex flex-col items-center justify-center p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 cursor-pointer"
             title={`${studyStreak} Day Streak`}
             onClick={() => handleSelectTab('profile')}
+            role="button"
+            tabIndex={0}
+            aria-label={`${studyStreak} day streak. Open profile`}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') handleSelectTab('profile');
+            }}
           >
             <Flame className="w-4 h-4 text-amber-500 animate-pulse" />
             <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 mt-0.5">
@@ -182,6 +198,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 type="button"
                 onClick={() => handleSelectTab(item.tab)}
                 title={isCollapsed ? item.label : undefined}
+                aria-label={item.label}
+                aria-current={isActive ? 'page' : undefined}
                 className={`w-full flex items-center ${
                   isCollapsed ? 'justify-center px-0' : 'justify-between px-3'
                 } py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all group ${
@@ -221,13 +239,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </nav>
       </div>
 
-      {/* Bottom Profile & Theme Section */}
-      <div className="space-y-2 pt-3 border-t border-[var(--border-subtle)]">
-        {/* Profile Card Button */}
+      {/* Bottom Profile Section (Theme toggle consolidated in top-right header) */}
+      <div className="pt-3 border-t border-[var(--border-subtle)]">
         <button
           type="button"
           onClick={() => handleSelectTab('profile')}
           title={isCollapsed ? profile.name : undefined}
+          aria-label={`Student Profile: ${profile.name}`}
           className={`w-full flex items-center ${
             isCollapsed ? 'justify-center p-2' : 'justify-between p-2'
           } rounded-xl border text-left transition-all ${
@@ -237,7 +255,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           }`}
         >
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-xs font-extrabold text-white shrink-0 shadow-sm">
+            <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-xs font-extrabold text-white shrink-0 shadow-sm">
               {profile.avatarInitials || 'ST'}
             </div>
             {!isCollapsed && (
@@ -253,29 +271,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
           {!isCollapsed && <ChevronRight className="w-3.5 h-3.5 text-[var(--muted)] shrink-0" />}
         </button>
-
-        {/* Theme Toggle */}
-        <div
-          className={`flex items-center ${
-            isCollapsed ? 'justify-center' : 'justify-between px-1'
-          } text-xs text-[var(--muted)]`}
-        >
-          {!isCollapsed && <span>Theme Mode</span>}
-          <button
-            type="button"
-            onClick={onToggleTheme}
-            aria-label="Toggle Theme"
-            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-            className="p-1.5 rounded-lg border border-[var(--border)] hover:bg-[var(--surface-hover)] text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
-          >
-            {theme === 'dark' ? (
-              <Sun className="w-3.5 h-3.5 text-amber-400" />
-            ) : (
-              <Moon className="w-3.5 h-3.5 text-indigo-400" />
-            )}
-          </button>
-        </div>
       </div>
-    </aside>
+    </motion.aside>
   );
 };

@@ -53,10 +53,10 @@ export const QuickActions: React.FC = () => {
             key={act.label}
             type="button"
             onClick={() => setActiveTab(act.tab)}
-            className="w-full p-2.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-muted)] hover:bg-[var(--surface-hover)] hover:border-indigo-500/40 text-left flex items-center justify-between gap-3 transition-all group"
+            className="hover-lift glass-stroke-border w-full p-2.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-muted)] hover:bg-[var(--surface-hover)] hover:border-indigo-500/50 hover:shadow-md hover:shadow-indigo-500/10 text-left flex items-center justify-between gap-3 transition-all group"
           >
             <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-7 h-7 rounded-lg bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform text-indigo-400">
+              <div className="w-7 h-7 rounded-lg bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:border-indigo-500/40 transition-all text-indigo-400">
                 {act.icon}
               </div>
               <div className="min-w-0">

@@ -119,8 +119,10 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
                 aria-checked={selected}
                 disabled={isSubmitted}
                 onClick={() => onSelectOption(option)}
-                className={`w-full text-left p-3 sm:p-3.5 rounded-xl border flex items-center justify-between gap-3 transition-all text-xs sm:text-sm ${optionClasses} ${
-                  isSubmitted ? 'cursor-default' : 'cursor-pointer'
+                className={`w-full text-left p-3 sm:p-3.5 rounded-xl border flex items-center justify-between gap-3 transition-all text-xs sm:text-sm ${
+                  !isSubmitted ? 'hover-lift glass-stroke-border' : ''
+                } ${optionClasses} ${
+                  isSubmitted ? 'cursor-default' : 'cursor-pointer active:scale-[0.99]'
                 }`}
               >
                 <div className="flex items-center gap-2.5 min-w-0">

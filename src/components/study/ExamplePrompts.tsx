@@ -48,7 +48,7 @@ export const ExamplePrompts: React.FC<ExamplePromptsProps> = ({ onSelectPrompt, 
             type="button"
             disabled={disabled}
             onClick={() => onSelectPrompt(ex.prompt)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--surface-glass)] dark:hover:bg-[var(--surface-hover)] border border-slate-300/80 dark:border-[var(--border)] hover:border-indigo-400 dark:hover:border-indigo-500/40 text-slate-800 dark:text-[var(--foreground)] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group shadow-sm"
+            className="hover-lift glass-stroke-border inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--surface-glass)] dark:hover:bg-[var(--surface-hover)] border border-slate-300/80 dark:border-[var(--border)] hover:border-indigo-400 dark:hover:border-indigo-500/50 text-slate-800 dark:text-[var(--foreground)] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group shadow-sm hover:shadow-md hover:shadow-indigo-500/10 active:scale-95"
           >
             <BookOpen className="w-3 h-3 text-indigo-600 dark:text-[var(--primary-light)] group-hover:scale-110 transition-transform" />
             <span>{ex.label}</span>

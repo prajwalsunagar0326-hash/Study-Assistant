@@ -89,7 +89,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLoadStudyPlan }) => {
       </div>
 
       {/* Quick Statistics Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 scroll-reveal-stagger">
         <StatsCard
           label="Tasks Completed"
           value={`${completedTasksCount} / ${tasks.length}`}
@@ -121,7 +121,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLoadStudyPlan }) => {
       </div>
 
       {/* Main Focus: 2/3 Today's Plan + 1/3 Quick Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-stretch scroll-reveal">
         <div className="lg:col-span-2">
           <TodayPlan />
         </div>
@@ -131,7 +131,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLoadStudyPlan }) => {
       </div>
 
       {/* Two Column Section: Saved Study Sets & Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 scroll-reveal">
         {/* Saved Study Sets Library */}
         <div className="glass-panel p-5 sm:p-6 space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)]">

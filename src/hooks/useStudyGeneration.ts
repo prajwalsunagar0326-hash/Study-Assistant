@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { StudyPlan, StudyMode, ApiError } from '../types/study';
 import { generateStudyPlanApi } from '../lib/api';
 
@@ -30,6 +31,22 @@ export function useStudyGeneration(): UseStudyGenerationReturn {
   const [loadingStage, setLoadingStage] = useState<LoadingStage>('reading');
   const [error, setError] = useState<ApiError | null>(null);
   const [lastPrompt, setLastPrompt] = useState<string>('');
+
+  // TanStack Query Mutation for Server API State management (Section 13)
+  const mutation = useMutation({
+    mutationKey: ['studyPlanGeneration'],
+    mutationFn: async ({
+      promptText,
+      selectedMode,
+      signal,
+    }: {
+      promptText: string;
+      selectedMode: StudyMode;
+      signal: AbortSignal;
+    }) => {
+      return generateStudyPlanApi(promptText, selectedMode, signal);
+    },
+  });
 
   // Stale request protection: increment counter for each invocation
   const requestIdRef = useRef<number>(0);
@@ -107,7 +124,11 @@ export function useStudyGeneration(): UseStudyGenerationReturn {
       stageTimeoutRef.current = [t1, t2, t3];
 
       try {
-        const result = await generateStudyPlanApi(prompt, activeMode, controller.signal);
+        const result = await mutation.mutateAsync({
+          promptText: prompt,
+          selectedMode: activeMode,
+          signal: controller.signal,
+        });
 
         // Guard against race conditions: if a newer request began, discard this result!
         if (currentRequestId !== requestIdRef.current) {
