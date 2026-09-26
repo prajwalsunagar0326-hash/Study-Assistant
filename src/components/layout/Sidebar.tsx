@@ -50,10 +50,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
     {
       tab: 'study',
-      label: 'AI Study Workspace',
+      label: 'Study Workspace',
       icon: <Sparkles className="w-4 h-4 text-indigo-400 shrink-0" />,
-      badge: 'AI',
-      badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
     },
     {
       tab: 'tasks',

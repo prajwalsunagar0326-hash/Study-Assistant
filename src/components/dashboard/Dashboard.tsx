@@ -84,7 +84,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onLoadStudyPlan }) => {
           className="btn-primary shrink-0 self-start md:self-center"
         >
           <Sparkles className="w-4 h-4" />
-          <span>Launch AI Study Workspace</span>
+          <span>Launch Study Workspace</span>
         </button>
       </div>
 

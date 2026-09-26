@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Bug, Sun, Moon, Flame, Menu } from 'lucide-react';
+import { Bug, Sun, Moon, Flame, Menu } from 'lucide-react';
 import { useProductivity } from '../../context/ProductivityContext';
 
 interface HeaderProps {
@@ -17,14 +17,14 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleTheme,
   onOpenMobileMenu,
 }) => {
-  const { activeTab, setIsSearchOpen, studyStreak } = useProductivity();
+  const { activeTab, studyStreak } = useProductivity();
 
   const getTabTitle = () => {
     switch (activeTab) {
       case 'dashboard':
         return 'Study Dashboard';
       case 'study':
-        return 'AI Study Workspace';
+        return 'Study Workspace';
       case 'tasks':
         return 'Tasks & To-Dos';
       case 'calendar':
@@ -66,34 +66,8 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Global Search Bar (Ctrl+K) */}
-        <div className="flex-1 max-w-md hidden md:block">
-          <button
-            type="button"
-            onClick={() => setIsSearchOpen(true)}
-            className="w-full flex items-center justify-between px-3.5 py-2 rounded-xl bg-[var(--surface-muted)] border border-[var(--border)] hover:border-indigo-500/50 text-xs text-[var(--muted)] hover:text-[var(--foreground)] transition-all group"
-          >
-            <div className="flex items-center gap-2">
-              <Search className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition-transform" />
-              <span>Search tasks, flashcards, events, notes...</span>
-            </div>
-            <kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] text-slate-600 dark:text-slate-300 font-mono">
-              Ctrl K
-            </kbd>
-          </button>
-        </div>
-
         {/* Action Affordances */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Mobile Search Button */}
-          <button
-            type="button"
-            onClick={() => setIsSearchOpen(true)}
-            aria-label="Search"
-            className="md:hidden p-2 rounded-lg text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-muted)]"
-          >
-            <Search className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
-          </button>
 
           {/* Streak indicator on header */}
           <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-bold text-amber-700 dark:text-amber-300">
