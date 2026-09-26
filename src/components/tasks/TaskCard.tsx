@@ -73,7 +73,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           className={`w-5 h-5 rounded-lg border mt-0.5 flex items-center justify-center shrink-0 transition-colors ${
             task.completed
               ? 'bg-emerald-500 border-emerald-500 text-slate-950'
-              : 'border-slate-500 hover:border-indigo-400 bg-slate-900/50'
+              : 'border-slate-400 dark:border-slate-500 hover:border-indigo-500 bg-white dark:bg-slate-900/50'
           }`}
         >
           {task.completed && <CheckCircle2 className="w-4 h-4 text-white" />}
@@ -83,7 +83,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           <div className="flex items-center gap-2 flex-wrap">
             <h4
               className={`text-sm sm:text-base font-semibold leading-snug break-words ${
-                task.completed ? 'line-through text-slate-400' : 'text-slate-100'
+                task.completed ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-900 dark:text-slate-100'
               }`}
             >
               {task.title}
@@ -92,7 +92,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           </div>
 
           {task.description && (
-            <p className="text-xs text-[var(--muted)] leading-relaxed line-clamp-2">
+            <p className="text-xs text-slate-600 dark:text-[var(--muted)] leading-relaxed line-clamp-2">
               {task.description}
             </p>
           )}
@@ -102,14 +102,14 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             {getDueDateLabel()}
 
             {task.category && (
-              <span className="flex items-center gap-1 text-[11px] text-[var(--muted-dark)] bg-slate-800/80 px-2 py-0.5 rounded-md border border-slate-700">
-                <Tag className="w-3 h-3 text-indigo-400" />
+              <span className="flex items-center gap-1 text-[11px] text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700">
+                <Tag className="w-3 h-3 text-indigo-500 dark:text-indigo-400" />
                 <span>{task.category}</span>
               </span>
             )}
 
             {task.completedAt && (
-              <span className="text-[10px] text-emerald-400/80">
+              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
                 Completed
               </span>
             )}
@@ -123,7 +123,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           type="button"
           onClick={() => onEdit(task)}
           title="Edit Task"
-          className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+          className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
         >
           <Edit3 className="w-3.5 h-3.5" />
         </button>
@@ -131,7 +131,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           type="button"
           onClick={() => onDelete(task.id)}
           title="Delete Task"
-          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-950/30 transition-colors"
+          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
         >
           <Trash2 className="w-3.5 h-3.5" />
         </button>

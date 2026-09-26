@@ -107,14 +107,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Streak Indicator Banner */}
         <div className="p-3 rounded-xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-transparent border border-amber-500/25 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+            <div className="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-600 dark:text-amber-400">
               <Flame className="w-4 h-4 animate-pulse" />
             </div>
             <div>
-              <div className="text-xs font-bold text-amber-300">
+              <div className="text-xs font-bold text-amber-700 dark:text-amber-300">
                 {studyStreak} Day{studyStreak === 1 ? '' : 's'} Streak
               </div>
-              <div className="text-[10px] text-[var(--muted)]">
+              <div className="text-[10px] text-slate-500 dark:text-[var(--muted)]">
                 {studyStreak > 0 ? 'Consistency unlocked!' : 'Complete study to start'}
               </div>
             </div>
@@ -171,8 +171,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           onClick={() => handleSelectTab('profile')}
           className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-left transition-all ${
             activeTab === 'profile'
-              ? 'bg-indigo-950/60 border-indigo-500/50 text-white'
-              : 'bg-[var(--surface-muted)] border-[var(--border)] hover:border-slate-600 text-[var(--foreground)]'
+              ? 'bg-indigo-50 dark:bg-indigo-950/60 border-indigo-500/50 text-indigo-950 dark:text-white ring-1 ring-indigo-500/20'
+              : 'bg-[var(--surface-muted)] border-[var(--border)] hover:border-slate-300 dark:hover:border-slate-600 text-[var(--foreground)]'
           }`}
         >
           <div className="flex items-center gap-2.5 min-w-0">

@@ -118,7 +118,7 @@ export const TaskPage: React.FC = () => {
               className={`px-3 py-1.5 rounded-lg font-semibold shrink-0 transition-all ${
                 filter === item.key
                   ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'text-[var(--muted)] hover:text-white hover:bg-slate-800'
+                  : 'text-[var(--muted)] hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
               {item.label}
@@ -133,7 +133,7 @@ export const TaskPage: React.FC = () => {
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as TaskSort)}
-            className="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs text-white focus:outline-none focus:border-indigo-500"
+            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-1.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
           >
             <option value="dueDate">Due Date</option>
             <option value="priority">Priority</option>
@@ -145,9 +145,9 @@ export const TaskPage: React.FC = () => {
 
       {/* Task List */}
       {sortedTasks.length === 0 ? (
-        <div className="p-12 text-center space-y-3 border border-dashed border-slate-700/60 rounded-2xl glass-panel">
-          <CheckCircle className="w-10 h-10 text-indigo-400/60 mx-auto" />
-          <h3 className="text-base font-bold text-slate-200">
+        <div className="p-12 text-center space-y-3 border border-dashed border-slate-300 dark:border-slate-700/60 rounded-2xl glass-panel">
+          <CheckCircle className="w-10 h-10 text-indigo-500 dark:text-indigo-400/60 mx-auto" />
+          <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">
             {filter === 'completed'
               ? 'No completed tasks yet'
               : filter === 'active'

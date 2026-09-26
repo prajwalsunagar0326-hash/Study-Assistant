@@ -57,7 +57,7 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
       <div className="glass-panel p-6 sm:p-8 space-y-6">
         {/* Meta / Difficulty Header */}
         <div className="flex items-center justify-between text-xs text-[var(--muted)]">
-          <div className="flex items-center gap-1.5 font-semibold text-violet-400">
+          <div className="flex items-center gap-1.5 font-semibold text-violet-600 dark:text-violet-400">
             <HelpCircle className="w-4 h-4" />
             <span>QUESTION {questionNumber} OF {totalQuestions}</span>
           </div>
@@ -67,12 +67,12 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
               onClick={toggleBookmark}
               className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
                 bookmarked
-                  ? 'bg-amber-500/25 text-amber-300 border border-amber-500/50'
-                  : 'bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700'
+                  ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/50'
+                  : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700'
               }`}
               aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark question'}
             >
-              <BookmarkIcon className={`w-3.5 h-3.5 ${bookmarked ? 'fill-current text-amber-400' : ''}`} />
+              <BookmarkIcon className={`w-3.5 h-3.5 ${bookmarked ? 'fill-current text-amber-500' : ''}`} />
               <span>{bookmarked ? '★ Saved' : '☆ Save'}</span>
             </button>
             <span className="badge badge-medium capitalize">{question.difficulty}</span>
@@ -81,7 +81,7 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
 
         {/* Question Prompt */}
         <div>
-          <h3 className="text-lg sm:text-xl font-bold text-white leading-relaxed">
+          <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-relaxed">
             {question.question}
           </h3>
         </div>
@@ -93,21 +93,21 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
             const selected = isSelected(option);
             const correct = isCorrect(option);
 
-            let optionClasses = 'border-[var(--border)] bg-[var(--surface-muted)] hover:border-slate-500/60';
-            let indicatorClasses = 'border-slate-600 bg-slate-800 text-slate-300';
+            let optionClasses = 'border-[var(--border)] bg-[var(--surface-muted)] hover:border-slate-400 dark:hover:border-slate-500/60 text-slate-900 dark:text-slate-100';
+            let indicatorClasses = 'border-slate-300 dark:border-slate-600 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300';
 
             if (isSubmitted) {
               if (correct) {
-                optionClasses = 'border-emerald-500/60 bg-emerald-950/30 text-emerald-100 shadow-sm shadow-emerald-500/10';
-                indicatorClasses = 'border-emerald-500 bg-emerald-500 text-slate-950';
+                optionClasses = 'border-emerald-500/60 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-100 shadow-sm shadow-emerald-500/10 font-medium';
+                indicatorClasses = 'border-emerald-500 bg-emerald-500 text-white dark:text-slate-950';
               } else if (selected && !correct) {
-                optionClasses = 'border-rose-500/60 bg-rose-950/30 text-rose-100 shadow-sm shadow-rose-500/10';
+                optionClasses = 'border-rose-500/60 bg-rose-50 dark:bg-rose-950/30 text-rose-900 dark:text-rose-100 shadow-sm shadow-rose-500/10 font-medium';
                 indicatorClasses = 'border-rose-500 bg-rose-500 text-white';
               } else {
-                optionClasses = 'opacity-50 border-[var(--border-subtle)] bg-[var(--surface-muted)]';
+                optionClasses = 'opacity-50 border-[var(--border-subtle)] bg-[var(--surface-muted)] text-slate-500 dark:text-slate-400';
               }
             } else if (selected) {
-              optionClasses = 'border-violet-500/80 bg-violet-950/40 text-white shadow-md shadow-violet-500/15';
+              optionClasses = 'border-violet-500/80 bg-violet-50 dark:bg-violet-950/40 text-violet-950 dark:text-white shadow-md shadow-violet-500/15 font-semibold';
               indicatorClasses = 'border-violet-500 bg-violet-600 text-white';
             }
 
@@ -133,10 +133,10 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
                 </div>
 
                 {isSubmitted && correct && (
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 )}
                 {isSubmitted && selected && !correct && (
-                  <XCircle className="w-5 h-5 text-rose-400 shrink-0" />
+                  <XCircle className="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0" />
                 )}
               </button>
             );
@@ -145,12 +145,12 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
 
         {/* Explanation Box (Revealed after submission) */}
         {isSubmitted && (
-          <div className="p-4 rounded-xl bg-slate-900/90 border border-indigo-500/30 space-y-2 text-xs sm:text-sm animate-fade-in">
-            <div className="flex items-center gap-1.5 font-bold text-indigo-400">
+          <div className="p-4 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-indigo-500/30 space-y-2 text-xs sm:text-sm animate-fade-in">
+            <div className="flex items-center gap-1.5 font-bold text-indigo-600 dark:text-indigo-400">
               <Sparkles className="w-4 h-4" />
               <span>Explanation:</span>
             </div>
-            <p className="text-slate-200 leading-relaxed">
+            <p className="text-slate-700 dark:text-slate-200 leading-relaxed">
               {question.explanation}
             </p>
           </div>

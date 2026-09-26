@@ -185,7 +185,7 @@ export const CalendarPage: React.FC = () => {
                 type="button"
                 onClick={handlePrevMonth}
                 aria-label="Previous Month"
-                className="p-1.5 rounded-lg border border-[var(--border)] text-[var(--muted)] hover:text-white hover:bg-slate-800"
+                className="p-1.5 rounded-lg border border-[var(--border)] text-[var(--muted)] hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -193,7 +193,7 @@ export const CalendarPage: React.FC = () => {
                 type="button"
                 onClick={handleNextMonth}
                 aria-label="Next Month"
-                className="p-1.5 rounded-lg border border-[var(--border)] text-[var(--muted)] hover:text-white hover:bg-slate-800"
+                className="p-1.5 rounded-lg border border-[var(--border)] text-[var(--muted)] hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -223,11 +223,11 @@ export const CalendarPage: React.FC = () => {
                   onClick={() => setSelectedDate(day.dateStr)}
                   className={`min-h-[60px] sm:min-h-[75px] p-2 rounded-xl border text-left flex flex-col justify-between transition-all ${
                     isSelected
-                      ? 'border-indigo-500 bg-indigo-950/40 shadow-md shadow-indigo-500/10'
+                      ? 'border-indigo-500 bg-indigo-50/80 dark:bg-indigo-950/40 shadow-md shadow-indigo-500/10 ring-1 ring-indigo-500/30'
                       : day.isToday
-                      ? 'border-amber-500/40 bg-amber-950/20'
+                      ? 'border-amber-500/40 bg-amber-50/80 dark:bg-amber-950/20'
                       : day.isCurrentMonth
-                      ? 'border-[var(--border)] bg-[var(--surface-muted)] hover:border-slate-600'
+                      ? 'border-[var(--border)] bg-[var(--surface-muted)] hover:border-slate-300 dark:hover:border-slate-600'
                       : 'border-transparent bg-transparent opacity-30'
                   }`}
                 >
@@ -235,16 +235,16 @@ export const CalendarPage: React.FC = () => {
                     <span
                       className={`text-xs font-bold ${
                         isSelected
-                          ? 'text-indigo-300'
+                          ? 'text-indigo-600 dark:text-indigo-300'
                           : day.isToday
-                          ? 'text-amber-400 font-extrabold'
-                          : 'text-slate-200'
+                          ? 'text-amber-600 dark:text-amber-400 font-extrabold'
+                          : 'text-slate-800 dark:text-slate-200'
                       }`}
                     >
                       {day.dayNumber}
                     </span>
                     {day.isToday && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                     )}
                   </div>
 
@@ -281,8 +281,8 @@ export const CalendarPage: React.FC = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
               <div className="flex items-center gap-2">
-                <CalendarDays className="w-4 h-4 text-indigo-400" />
-                <h3 className="font-bold text-sm sm:text-base text-white">
+                <CalendarDays className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+                <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
                   {selectedDate === todayStr ? 'Today' : selectedDate}
                 </h3>
               </div>
@@ -292,9 +292,9 @@ export const CalendarPage: React.FC = () => {
             </div>
 
             {selectedDateEvents.length === 0 ? (
-              <div className="p-8 text-center space-y-2 border border-dashed border-slate-700/60 rounded-xl text-xs text-[var(--muted)]">
-                <BookOpen className="w-6 h-6 text-slate-500 mx-auto" />
-                <p className="font-semibold text-slate-300">No events on this date</p>
+              <div className="p-8 text-center space-y-2 border border-dashed border-slate-300 dark:border-slate-700/60 rounded-xl text-xs text-[var(--muted)]">
+                <BookOpen className="w-6 h-6 text-slate-400 mx-auto" />
+                <p className="font-semibold text-slate-700 dark:text-slate-300">No events on this date</p>
                 <p>Plan a study block or schedule an exam reminder.</p>
                 <button
                   type="button"
@@ -315,13 +315,13 @@ export const CalendarPage: React.FC = () => {
                     <div className="flex items-start justify-between gap-2">
                       <div className="space-y-0.5 flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <h4 className="font-semibold text-xs sm:text-sm text-slate-100 truncate">
+                          <h4 className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-slate-100 truncate">
                             {ev.title}
                           </h4>
                           {getTypeBadge(ev.type)}
                         </div>
                         {ev.startTime && (
-                          <div className="flex items-center gap-1 text-[11px] text-indigo-300">
+                          <div className="flex items-center gap-1 text-[11px] text-indigo-600 dark:text-indigo-300">
                             <Clock className="w-3 h-3" />
                             <span>
                               {ev.startTime} {ev.endTime ? `– ${ev.endTime}` : ''}
@@ -334,22 +334,21 @@ export const CalendarPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => handleOpenEdit(ev)}
-                          className="p-1 rounded text-slate-400 hover:text-white"
+                          className="p-1 rounded text-slate-400 hover:text-slate-900 dark:hover:text-white"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
                         </button>
                         <button
                           type="button"
                           onClick={() => deleteEvent(ev.id)}
-                          className="p-1 rounded text-slate-400 hover:text-rose-400"
+                          className="p-1 rounded text-slate-400 hover:text-rose-500"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </div>
-
                     {ev.description && (
-                      <p className="text-xs text-[var(--muted)] leading-relaxed">
+                      <p className="text-xs text-slate-600 dark:text-[var(--muted)] leading-relaxed">
                         {ev.description}
                       </p>
                     )}

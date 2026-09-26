@@ -96,22 +96,22 @@ export const BookmarkPage: React.FC = () => {
         </div>
 
         <div className="relative min-w-[200px]">
-          <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search bookmarks..."
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500"
+            className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-indigo-500"
           />
         </div>
       </div>
 
       {/* Bookmarks Grid */}
       {filteredBookmarks.length === 0 ? (
-        <div className="p-12 text-center space-y-3 border border-dashed border-slate-700/60 rounded-2xl glass-panel">
-          <BookmarkIcon className="w-10 h-10 text-indigo-400/60 mx-auto" />
-          <h3 className="text-base font-bold text-slate-200">
+        <div className="p-12 text-center space-y-3 border border-dashed border-slate-300 dark:border-slate-700/60 rounded-2xl glass-panel">
+          <BookmarkIcon className="w-10 h-10 text-indigo-500 dark:text-indigo-400/60 mx-auto" />
+          <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">
             {search ? 'No bookmarks match your search' : 'No bookmarks saved yet'}
           </h3>
           <p className="text-xs text-[var(--muted)] max-w-sm mx-auto">
@@ -132,7 +132,7 @@ export const BookmarkPage: React.FC = () => {
           {filteredBookmarks.map((bm) => (
             <div
               key={bm.id}
-              className="glass-panel p-5 space-y-3 flex flex-col justify-between hover:border-slate-600 transition-all"
+              className="glass-panel p-5 space-y-3 flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-600 transition-all"
             >
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -142,11 +142,11 @@ export const BookmarkPage: React.FC = () => {
                   </span>
                 </div>
 
-                <h4 className="text-sm sm:text-base font-bold text-white leading-snug">
+                <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug">
                   {bm.title}
                 </h4>
 
-                <p className="text-xs text-slate-300 leading-relaxed line-clamp-3">
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3">
                   {bm.content}
                 </p>
               </div>
@@ -155,7 +155,7 @@ export const BookmarkPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setActiveTab('study')}
-                  className="text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1"
+                  className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 font-semibold flex items-center gap-1"
                 >
                   <span>Review in Study</span>
                   <ArrowRight className="w-3 h-3" />
@@ -165,7 +165,7 @@ export const BookmarkPage: React.FC = () => {
                   type="button"
                   onClick={() => removeBookmark(bm.id)}
                   title="Remove Bookmark"
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-950/30 transition-colors"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

@@ -68,9 +68,9 @@ export const Flashcard: React.FC<FlashcardProps> = ({
       >
         {/* Front Face: Question */}
         <div className="flashcard-face flashcard-front">
-          <div className="flex items-center justify-between text-xs text-[var(--muted)]">
+          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-[var(--muted)]">
             <div className="flex items-center gap-1.5 font-medium">
-              <HelpCircle className="w-4 h-4 text-indigo-400" />
+              <HelpCircle className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
               <span>QUESTION</span>
             </div>
             <div className="flex items-center gap-2">
@@ -79,28 +79,28 @@ export const Flashcard: React.FC<FlashcardProps> = ({
                 onClick={toggleBookmark}
                 className={`flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold transition-all ${
                   bookmarked
-                    ? 'bg-amber-500/25 text-amber-300 border border-amber-500/50'
-                    : 'bg-white/10 hover:bg-white/20 text-slate-300 border border-white/15'
+                    ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/40'
+                    : 'bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/15'
                 }`}
                 aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark flashcard'}
               >
-                <BookmarkIcon className={`w-3.5 h-3.5 ${bookmarked ? 'fill-current text-amber-400' : ''}`} />
+                <BookmarkIcon className={`w-3.5 h-3.5 ${bookmarked ? 'fill-current text-amber-500' : ''}`} />
                 <span>{bookmarked ? '★ Saved' : '☆ Save'}</span>
               </button>
               {getDifficultyBadge(card.difficulty)}
-              <span className="font-semibold text-[var(--foreground)]">
+              <span className="font-semibold text-slate-800 dark:text-[var(--foreground)]">
                 {cardNumber} / {totalCards}
               </span>
             </div>
           </div>
 
           <div className="my-auto py-6 px-2">
-            <p className="text-lg sm:text-2xl font-bold text-white leading-snug">
+            <p className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white leading-snug">
               {card.question}
             </p>
           </div>
 
-          <div className="flex items-center justify-center gap-1.5 text-xs text-indigo-300 font-medium">
+          <div className="flex items-center justify-center gap-1.5 text-xs text-indigo-600 dark:text-indigo-300 font-medium">
             <RefreshCw className="w-3.5 h-3.5" />
             <span>Click or press Space to reveal answer</span>
           </div>
@@ -108,8 +108,8 @@ export const Flashcard: React.FC<FlashcardProps> = ({
 
         {/* Back Face: Answer */}
         <div className="flashcard-face flashcard-back">
-          <div className="flex items-center justify-between text-xs text-[var(--muted)]">
-            <div className="flex items-center gap-1.5 font-medium text-emerald-400">
+          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-[var(--muted)]">
+            <div className="flex items-center gap-1.5 font-medium text-emerald-600 dark:text-emerald-400">
               <CheckCircle2 className="w-4 h-4" />
               <span>KEY INSIGHT & ANSWER</span>
             </div>
@@ -119,28 +119,28 @@ export const Flashcard: React.FC<FlashcardProps> = ({
                 onClick={toggleBookmark}
                 className={`flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold transition-all ${
                   bookmarked
-                    ? 'bg-amber-500/25 text-amber-300 border border-amber-500/50'
-                    : 'bg-white/10 hover:bg-white/20 text-slate-300 border border-white/15'
+                    ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/40'
+                    : 'bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/15'
                 }`}
                 aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark flashcard'}
               >
-                <BookmarkIcon className={`w-3.5 h-3.5 ${bookmarked ? 'fill-current text-amber-400' : ''}`} />
+                <BookmarkIcon className={`w-3.5 h-3.5 ${bookmarked ? 'fill-current text-amber-500' : ''}`} />
                 <span>{bookmarked ? '★ Saved' : '☆ Save'}</span>
               </button>
               {getDifficultyBadge(card.difficulty)}
-              <span className="font-semibold text-[var(--foreground)]">
+              <span className="font-semibold text-slate-800 dark:text-[var(--foreground)]">
                 {cardNumber} / {totalCards}
               </span>
             </div>
           </div>
 
           <div className="my-auto py-6 px-2">
-            <p className="text-base sm:text-lg text-slate-100 font-medium leading-relaxed">
+            <p className="text-base sm:text-lg text-slate-800 dark:text-slate-100 font-medium leading-relaxed">
               {card.answer}
             </p>
           </div>
 
-          <div className="flex items-center justify-center gap-1.5 text-xs text-purple-300 font-medium">
+          <div className="flex items-center justify-center gap-1.5 text-xs text-purple-600 dark:text-purple-300 font-medium">
             <RefreshCw className="w-3.5 h-3.5" />
             <span>Click to flip back to question</span>
           </div>

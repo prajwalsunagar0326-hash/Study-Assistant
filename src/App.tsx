@@ -59,9 +59,10 @@ const AppContent: React.FC = () => {
     setStudyPlan,
   } = useStudyGeneration();
 
-  // Synchronize theme with HTML document attribute
+  // Synchronize theme with HTML document attribute and dark class
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.classList.toggle('dark', theme === 'dark');
     localStorage.setItem('studyai-theme', theme);
   }, [theme]);
 
@@ -136,8 +137,8 @@ const AppContent: React.FC = () => {
                 <div className="space-y-8">
                   {/* Hero Section */}
                   <div ref={heroRef} className="text-center space-y-3 pt-2 sm:pt-4">
-                    <div className="hero-element inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/25 text-xs font-semibold text-indigo-300">
-                      <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
+                    <div className="hero-element inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-xs font-semibold text-indigo-700 dark:text-indigo-300">
+                      <ShieldCheck className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                       <span>Non-Chatbot Structured Learning Engine</span>
                     </div>
                     <h1 className="hero-element text-3xl sm:text-5xl font-extrabold tracking-tight text-[var(--foreground)]">

@@ -149,30 +149,30 @@ export const SearchCommandModal: React.FC = () => {
       onClick={() => setIsSearchOpen(false)}
     >
       <div
-        className="w-full max-w-xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
+        className="w-full max-w-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input Bar */}
-        <div className="flex items-center gap-3 p-4 border-b border-slate-800 bg-slate-950/60">
-          <Search className="w-5 h-5 text-indigo-400 shrink-0" />
+        <div className="flex items-center gap-3 p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/60">
+          <Search className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0" />
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search tasks, study sets, calendar events, bookmarks..."
-            className="flex-1 bg-transparent text-sm sm:text-base text-white placeholder:text-slate-500 focus:outline-none"
+            className="flex-1 bg-transparent text-sm sm:text-base text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none"
           />
           {query ? (
             <button
               type="button"
               onClick={() => setQuery('')}
-              className="p-1 rounded text-slate-400 hover:text-white"
+              className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-white"
             >
               <X className="w-4 h-4" />
             </button>
           ) : (
-            <kbd className="hidden sm:inline-block px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-[10px] text-slate-400 font-mono">
+            <kbd className="hidden sm:inline-block px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] text-slate-500 dark:text-slate-400 font-mono">
               ESC
             </kbd>
           )}
@@ -181,37 +181,37 @@ export const SearchCommandModal: React.FC = () => {
         {/* Results Container */}
         <div className="overflow-y-auto p-3 space-y-2 flex-1">
           {query.trim().length === 0 ? (
-            <div className="py-12 text-center space-y-2 text-slate-400">
-              <Command className="w-8 h-8 mx-auto text-slate-600" />
+            <div className="py-12 text-center space-y-2 text-slate-600 dark:text-slate-400">
+              <Command className="w-8 h-8 mx-auto text-slate-400 dark:text-slate-600" />
               <p className="text-xs sm:text-sm">Type any keyword to search across your study workspace.</p>
               <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500 pt-1">
                 <span>Try:</span>
                 <button
                   type="button"
                   onClick={() => setQuery('dbms')}
-                  className="px-2 py-0.5 rounded bg-slate-800 text-indigo-300 hover:bg-slate-700"
+                  className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-300 hover:bg-slate-200 dark:hover:bg-slate-700"
                 >
                   dbms
                 </button>
                 <button
                   type="button"
                   onClick={() => setQuery('operating')}
-                  className="px-2 py-0.5 rounded bg-slate-800 text-indigo-300 hover:bg-slate-700"
+                  className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-300 hover:bg-slate-200 dark:hover:bg-slate-700"
                 >
                   operating
                 </button>
                 <button
                   type="button"
                   onClick={() => setQuery('assignment')}
-                  className="px-2 py-0.5 rounded bg-slate-800 text-indigo-300 hover:bg-slate-700"
+                  className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-300 hover:bg-slate-200 dark:hover:bg-slate-700"
                 >
                   assignment
                 </button>
               </div>
             </div>
           ) : results.length === 0 ? (
-            <div className="py-12 text-center space-y-2 text-slate-400">
-              <p className="text-sm font-semibold text-slate-300">No results found for "{query}"</p>
+            <div className="py-12 text-center space-y-2 text-slate-500 dark:text-slate-400">
+              <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">No results found for "{query}"</p>
               <p className="text-xs text-slate-500">Check spelling or try a more general search term.</p>
             </div>
           ) : (
@@ -224,28 +224,28 @@ export const SearchCommandModal: React.FC = () => {
                   key={res.id}
                   type="button"
                   onClick={() => handleSelectResult(res.tab)}
-                  className="w-full flex items-start justify-between gap-3 p-3 rounded-xl border border-slate-800/80 bg-slate-950/40 hover:bg-indigo-950/30 hover:border-indigo-500/40 text-left transition-all group"
+                  className="w-full flex items-start justify-between gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-800/80 bg-slate-50/60 dark:bg-slate-950/40 hover:bg-indigo-50/80 dark:hover:bg-indigo-950/30 hover:border-indigo-400/40 dark:hover:border-indigo-500/40 text-left transition-all group"
                 >
                   <div className="flex items-start gap-3 min-w-0">
-                    <div className="p-2 rounded-lg bg-slate-800/80 border border-slate-700 shrink-0 mt-0.5">
+                    <div className="p-2 rounded-lg bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shrink-0 mt-0.5">
                       {getResultIcon(res.type)}
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-xs sm:text-sm text-slate-100 group-hover:text-white truncate">
+                        <span className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-white truncate">
                           {res.title}
                         </span>
-                        <span className="text-[10px] font-bold uppercase px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 border border-slate-700 shrink-0">
+                        <span className="text-[10px] font-bold uppercase px-1.5 py-0.2 rounded bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-400 border border-slate-300 dark:border-slate-700 shrink-0">
                           {res.type}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-400 truncate mt-0.5">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
                         {res.preview}
                       </p>
                     </div>
                   </div>
 
-                  <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-indigo-400 group-hover:translate-x-0.5 transition-all shrink-0 mt-2" />
+                  <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:translate-x-0.5 transition-all shrink-0 mt-2" />
                 </button>
               ))}
             </div>
@@ -253,7 +253,7 @@ export const SearchCommandModal: React.FC = () => {
         </div>
 
         {/* Footer shortcuts hint */}
-        <div className="p-3 border-t border-slate-800 bg-slate-950/80 flex items-center justify-between text-[11px] text-slate-500">
+        <div className="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/80 flex items-center justify-between text-[11px] text-slate-500">
           <span>Search automatically groups tasks, notes, and study sets</span>
           <span>Press ESC to close</span>
         </div>

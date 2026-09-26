@@ -81,28 +81,28 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-3 gap-3 p-4 rounded-xl bg-slate-900/60 border border-[var(--border-subtle)]">
+        <div className="grid grid-cols-3 gap-3 p-4 rounded-xl bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-[var(--border-subtle)]">
           <div className="space-y-1">
             <span className="text-[11px] text-[var(--muted)] uppercase font-semibold">Score</span>
-            <p className="text-lg sm:text-xl font-bold text-white">
+            <p className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
               {score} / {totalQuestions}
             </p>
           </div>
           <div className="space-y-1">
-            <span className="text-[11px] text-emerald-400 uppercase font-semibold flex items-center justify-center gap-1">
+            <span className="text-[11px] text-emerald-600 dark:text-emerald-400 uppercase font-semibold flex items-center justify-center gap-1">
               <CheckCircle className="w-3 h-3" />
               <span>Correct</span>
             </span>
-            <p className="text-lg sm:text-xl font-bold text-emerald-400">
+            <p className="text-lg sm:text-xl font-bold text-emerald-600 dark:text-emerald-400">
               {score}
             </p>
           </div>
           <div className="space-y-1">
-            <span className="text-[11px] text-rose-400 uppercase font-semibold flex items-center justify-center gap-1">
+            <span className="text-[11px] text-rose-600 dark:text-rose-400 uppercase font-semibold flex items-center justify-center gap-1">
               <XCircle className="w-3 h-3" />
               <span>Missed</span>
             </span>
-            <p className="text-lg sm:text-xl font-bold text-rose-400">
+            <p className="text-lg sm:text-xl font-bold text-rose-600 dark:text-rose-400">
               {wrongCount}
             </p>
           </div>
@@ -134,7 +134,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({
             <button
               type="button"
               onClick={onReviewFlashcards}
-              className="btn-secondary w-full sm:w-auto text-xs sm:text-sm text-indigo-300 border-indigo-500/30"
+              className="btn-secondary w-full sm:w-auto text-xs sm:text-sm text-indigo-600 dark:text-indigo-300 border-indigo-400/40 dark:border-indigo-500/30"
             >
               <Layers className="w-3.5 h-3.5" />
               <span>Review Flashcards</span>

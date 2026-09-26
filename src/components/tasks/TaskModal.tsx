@@ -69,20 +69,20 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg bg-slate-900 border border-slate-700/80 rounded-2xl p-6 shadow-2xl space-y-5"
+        className="w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 rounded-2xl p-6 shadow-2xl space-y-5"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
           <div className="flex items-center gap-2">
-            <CheckSquare className="w-5 h-5 text-indigo-400" />
-            <h3 className="text-base sm:text-lg font-bold text-white">
+            <CheckSquare className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
               {initialTask ? 'Edit Task' : 'Create New Study Task'}
             </h3>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
           >
             <X className="w-5 h-5" />
           </button>
@@ -90,15 +90,15 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs sm:text-sm">
           {error && (
-            <div className="flex items-center gap-2 p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs">
-              <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300 text-xs">
+              <AlertCircle className="w-4 h-4 shrink-0 text-rose-500 dark:text-rose-400" />
               <span>{error}</span>
             </div>
           )}
 
           <div className="space-y-1.5">
-            <label htmlFor="task-title" className="font-semibold text-slate-300 block">
-              Task Title <span className="text-rose-400">*</span>
+            <label htmlFor="task-title" className="font-semibold text-slate-700 dark:text-slate-300 block">
+              Task Title <span className="text-rose-500 dark:text-rose-400">*</span>
             </label>
             <input
               id="task-title"
@@ -107,12 +107,12 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Solve DBMS BCNF Practice Problems"
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="task-desc" className="font-semibold text-slate-300 block">
+            <label htmlFor="task-desc" className="font-semibold text-slate-700 dark:text-slate-300 block">
               Description (Optional)
             </label>
             <textarea
@@ -121,20 +121,20 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Add key notes, reference pages, or checklist items..."
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 resize-none"
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 resize-none"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="space-y-1.5">
-              <label htmlFor="task-priority" className="font-semibold text-slate-300 block">
+              <label htmlFor="task-priority" className="font-semibold text-slate-700 dark:text-slate-300 block">
                 Priority
               </label>
               <select
                 id="task-priority"
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as TaskPriority)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
               >
                 <option value="low">Low Priority</option>
                 <option value="medium">Medium Priority</option>
@@ -143,7 +143,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="task-due" className="font-semibold text-slate-300 block">
+              <label htmlFor="task-due" className="font-semibold text-slate-700 dark:text-slate-300 block">
                 Due Date
               </label>
               <input
@@ -151,13 +151,12 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-white focus:outline-none focus:border-indigo-500"
-              >
-              </input>
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
+              />
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="task-cat" className="font-semibold text-slate-300 block">
+              <label htmlFor="task-cat" className="font-semibold text-slate-700 dark:text-slate-300 block">
                 Course / Subject
               </label>
               <input
@@ -166,12 +165,12 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 placeholder="e.g. Operating Systems"
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
             <button
               type="button"
               onClick={onClose}

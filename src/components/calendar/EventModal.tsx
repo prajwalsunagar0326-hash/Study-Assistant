@@ -79,20 +79,20 @@ export const EventModal: React.FC<EventModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg bg-slate-900 border border-slate-700/80 rounded-2xl p-6 shadow-2xl space-y-5"
+        className="w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 rounded-2xl p-6 shadow-2xl space-y-5"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
           <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-indigo-400" />
-            <h3 className="text-base sm:text-lg font-bold text-white">
+            <Calendar className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
               {initialEvent ? 'Edit Study Event' : 'Schedule Study Event'}
             </h3>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
           >
             <X className="w-5 h-5" />
           </button>
@@ -100,15 +100,15 @@ export const EventModal: React.FC<EventModalProps> = ({
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs sm:text-sm">
           {error && (
-            <div className="flex items-center gap-2 p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs">
-              <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300 text-xs">
+              <AlertCircle className="w-4 h-4 shrink-0 text-rose-500 dark:text-rose-400" />
               <span>{error}</span>
             </div>
           )}
 
           <div className="space-y-1.5">
-            <label htmlFor="event-title" className="font-semibold text-slate-300 block">
-              Event Title <span className="text-rose-400">*</span>
+            <label htmlFor="event-title" className="font-semibold text-slate-700 dark:text-slate-300 block">
+              Event Title <span className="text-rose-500 dark:text-rose-400">*</span>
             </label>
             <input
               id="event-title"
@@ -117,14 +117,14 @@ export const EventModal: React.FC<EventModalProps> = ({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Operating Systems Final Review"
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label htmlFor="event-date" className="font-semibold text-slate-300 block">
-                Date <span className="text-rose-400">*</span>
+              <label htmlFor="event-date" className="font-semibold text-slate-700 dark:text-slate-300 block">
+                Date <span className="text-rose-500 dark:text-rose-400">*</span>
               </label>
               <input
                 id="event-date"
@@ -132,19 +132,19 @@ export const EventModal: React.FC<EventModalProps> = ({
                 required
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="event-type" className="font-semibold text-slate-300 block">
+              <label htmlFor="event-type" className="font-semibold text-slate-700 dark:text-slate-300 block">
                 Event Type
               </label>
               <select
                 id="event-type"
                 value={type}
                 onChange={(e) => setType(e.target.value as StudyEventType)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
               >
                 <option value="study">Study Session</option>
                 <option value="assignment">Assignment</option>
@@ -157,7 +157,7 @@ export const EventModal: React.FC<EventModalProps> = ({
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label htmlFor="event-start" className="font-semibold text-slate-300 block">
+              <label htmlFor="event-start" className="font-semibold text-slate-700 dark:text-slate-300 block">
                 Start Time
               </label>
               <input
@@ -165,12 +165,12 @@ export const EventModal: React.FC<EventModalProps> = ({
                 type="time"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-white focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="event-end" className="font-semibold text-slate-300 block">
+              <label htmlFor="event-end" className="font-semibold text-slate-700 dark:text-slate-300 block">
                 End Time
               </label>
               <input
@@ -178,13 +178,13 @@ export const EventModal: React.FC<EventModalProps> = ({
                 type="time"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-white focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="event-desc" className="font-semibold text-slate-300 block">
+            <label htmlFor="event-desc" className="font-semibold text-slate-700 dark:text-slate-300 block">
               Description / Notes (Optional)
             </label>
             <textarea
@@ -193,11 +193,11 @@ export const EventModal: React.FC<EventModalProps> = ({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="What modules or chapters will you cover?"
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 resize-none"
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 resize-none"
             />
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
             <button
               type="button"
               onClick={onClose}
