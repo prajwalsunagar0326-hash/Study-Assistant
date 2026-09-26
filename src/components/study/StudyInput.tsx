@@ -68,23 +68,23 @@ export const StudyInput: React.FC<StudyInputProps> = ({
   };
 
   return (
-    <div className="w-full space-y-3">
+    <div className="w-full space-y-4">
       {/* Mode Selector */}
-      <div className="space-y-1">
-        <label className="block text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">
+      <div className="space-y-1.5">
+        <label className="block text-[11px] font-bold uppercase tracking-wider text-[var(--muted)]">
           Select Study Mode
         </label>
         <ModeSelector mode={mode} onChange={setMode} disabled={isLoading} />
       </div>
 
       {/* Main Input Form */}
-      <form onSubmit={handleSubmit} className="glass-panel p-3.5 sm:p-4 space-y-2.5">
-        <div className="flex items-center justify-between pb-1 border-b border-[var(--border-subtle)]">
+      <form onSubmit={handleSubmit} className="glass-panel p-5 sm:p-6 space-y-3.5">
+        <div className="flex items-center justify-between pb-1.5 border-b border-[var(--border-subtle)]">
           <label
             htmlFor="study-material-input"
-            className="text-xs font-semibold text-[var(--foreground)] flex items-center gap-1.5"
+            className="text-xs sm:text-sm font-semibold text-[var(--foreground)] flex items-center gap-2"
           >
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+            <Sparkles className="w-4 h-4 text-indigo-400" />
             <span>Enter Notes or Topic</span>
           </label>
           {prompt.length > 0 && !isLoading && (
@@ -104,22 +104,22 @@ export const StudyInput: React.FC<StudyInputProps> = ({
           <textarea
             id="study-material-input"
             ref={textareaRef}
-            rows={3}
+            rows={5}
             value={prompt}
             onChange={handleTextChange}
             disabled={isLoading}
             placeholder="Paste your lecture notes, textbook excerpts, or enter a subject topic (e.g. Java OOP Polymorphism, Database Normalization BCNF, Process Scheduling)..."
-            className="w-full bg-[var(--background-secondary)] text-[var(--foreground)] border border-[var(--border)] focus:border-indigo-500 rounded-xl p-3 text-xs sm:text-sm leading-relaxed placeholder:text-[var(--muted)] focus:outline-none focus:ring-1 focus:ring-indigo-500/30 transition-all resize-y min-h-[90px] sm:min-h-[105px] max-h-[220px]"
+            className="w-full bg-[var(--background-secondary)] text-[var(--foreground)] border border-[var(--border)] focus:border-indigo-500 rounded-xl p-4 text-sm sm:text-base leading-relaxed placeholder:text-[var(--muted)] focus:outline-none focus:ring-1 focus:ring-indigo-500/30 transition-all resize-y min-h-[130px] sm:min-h-[150px] max-h-[280px]"
           />
-          <div className="flex items-center justify-between mt-1 px-1">
+          <div className="flex items-center justify-between mt-1.5 px-1">
             <span
-              className={`text-[11px] ${
+              className={`text-xs ${
                 charsRemaining < 200 ? 'text-amber-500 font-semibold' : 'text-[var(--muted)]'
               }`}
             >
               {charsRemaining} characters left
             </span>
-            <span className="text-[10px] text-[var(--muted)] hidden sm:inline">
+            <span className="text-[11px] text-[var(--muted)] hidden sm:inline">
               Max {MAX_CHARS} chars • Markdown / plain text supported
             </span>
           </div>
@@ -127,14 +127,14 @@ export const StudyInput: React.FC<StudyInputProps> = ({
 
         {/* Validation Error Message */}
         {validationError && (
-          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300 text-xs animate-shake">
+          <div className="flex items-center gap-2 p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300 text-xs animate-shake">
             <AlertCircle className="w-4 h-4 shrink-0 text-rose-500 dark:text-rose-400" />
             <span>{validationError}</span>
           </div>
         )}
 
         {/* Bottom Actions Row: Inspiration + Generate CTA */}
-        <div className="pt-1 flex flex-col md:flex-row md:items-end justify-between gap-3">
+        <div className="pt-1.5 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex-1">
             <ExamplePrompts onSelectPrompt={handleSelectExample} disabled={isLoading} />
           </div>
@@ -142,16 +142,16 @@ export const StudyInput: React.FC<StudyInputProps> = ({
           <button
             type="submit"
             disabled={isLoading || prompt.trim().length === 0}
-            className="btn-primary w-full md:w-auto px-5 py-2.5 shrink-0 text-xs sm:text-sm"
+            className="btn-primary w-full md:w-auto px-6 py-3 shrink-0 text-sm font-semibold shadow-lg shadow-indigo-500/25"
           >
             {isLoading ? (
               <>
-                <Wand2 className="w-3.5 h-3.5 animate-spin" />
+                <Wand2 className="w-4 h-4 animate-spin" />
                 <span>Creating your study set...</span>
               </>
             ) : (
               <>
-                <Sparkles className="w-3.5 h-3.5" />
+                <Sparkles className="w-4 h-4" />
                 <span>Generate Study Set</span>
               </>
             )}

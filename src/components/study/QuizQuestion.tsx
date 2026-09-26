@@ -52,9 +52,9 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
   const isCorrect = (opt: string) => opt.trim() === question.correctAnswer.trim();
 
   return (
-    <div className="w-full max-w-3xl mx-auto space-y-6">
+    <div className="w-full max-w-3xl mx-auto space-y-3 sm:space-y-4">
       {/* Question Card */}
-      <div className="glass-panel p-6 sm:p-8 space-y-6">
+      <div className="glass-panel p-4 sm:p-6 space-y-3.5">
         {/* Meta / Difficulty Header */}
         <div className="flex items-center justify-between text-xs text-[var(--muted)]">
           <div className="flex items-center gap-1.5 font-semibold text-violet-600 dark:text-violet-400">
@@ -65,7 +65,7 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
             <button
               type="button"
               onClick={toggleBookmark}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold transition-all ${
                 bookmarked
                   ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/50'
                   : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700'
@@ -81,13 +81,13 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
 
         {/* Question Prompt */}
         <div>
-          <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-relaxed">
+          <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">
             {question.question}
           </h3>
         </div>
 
-        {/* 4 Options Grid */}
-        <div className="space-y-3" role="radiogroup" aria-label={`Options for question ${questionNumber}`}>
+        {/* 4 Options Grid (2x2 on desktop, 1-col on mobile) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5" role="radiogroup" aria-label={`Options for question ${questionNumber}`}>
           {question.options.map((option, idx) => {
             const letter = String.fromCharCode(65 + idx); // A, B, C, D
             const selected = isSelected(option);
@@ -119,24 +119,24 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
                 aria-checked={selected}
                 disabled={isSubmitted}
                 onClick={() => onSelectOption(option)}
-                className={`w-full text-left p-4 rounded-xl border flex items-center justify-between gap-3.5 transition-all text-sm sm:text-base ${optionClasses} ${
+                className={`w-full text-left p-3 sm:p-3.5 rounded-xl border flex items-center justify-between gap-3 transition-all text-xs sm:text-sm ${optionClasses} ${
                   isSubmitted ? 'cursor-default' : 'cursor-pointer'
                 }`}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5 min-w-0">
                   <div
-                    className={`w-7 h-7 rounded-lg border flex items-center justify-center text-xs font-bold shrink-0 transition-colors ${indicatorClasses}`}
+                    className={`w-6 h-6 rounded-md border flex items-center justify-center text-xs font-bold shrink-0 transition-colors ${indicatorClasses}`}
                   >
                     {letter}
                   </div>
-                  <span className="font-medium">{option}</span>
+                  <span className="font-medium truncate sm:whitespace-normal">{option}</span>
                 </div>
 
                 {isSubmitted && correct && (
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 )}
                 {isSubmitted && selected && !correct && (
-                  <XCircle className="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0" />
+                  <XCircle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />
                 )}
               </button>
             );
@@ -145,9 +145,9 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
 
         {/* Explanation Box (Revealed after submission) */}
         {isSubmitted && (
-          <div className="p-4 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-indigo-500/30 space-y-2 text-xs sm:text-sm animate-fade-in">
+          <div className="p-3 rounded-lg bg-slate-100 dark:bg-slate-900/90 border border-indigo-500/30 space-y-1.5 text-xs animate-fade-in">
             <div className="flex items-center gap-1.5 font-bold text-indigo-600 dark:text-indigo-400">
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="w-3.5 h-3.5" />
               <span>Explanation:</span>
             </div>
             <p className="text-slate-700 dark:text-slate-200 leading-relaxed">
@@ -157,13 +157,13 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
         )}
 
         {/* Action Controls */}
-        <div className="flex items-center justify-end gap-3 pt-2">
+        <div className="flex items-center justify-end gap-3 pt-1">
           {!isSubmitted ? (
             <button
               type="button"
               disabled={!selectedOption}
               onClick={onSubmitAnswer}
-              className="btn-primary w-full sm:w-auto px-6 py-2.5"
+              className="btn-primary w-full sm:w-auto px-5 py-2 text-xs sm:text-sm"
             >
               <span>Check Answer</span>
             </button>
@@ -171,7 +171,7 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
             <button
               type="button"
               onClick={onNextQuestion}
-              className="btn-primary w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-indigo-600"
+              className="btn-primary w-full sm:w-auto px-5 py-2 text-xs sm:text-sm bg-gradient-to-r from-emerald-600 to-indigo-600"
             >
               <span>{isLastQuestion ? 'View Final Results' : 'Next Question'}</span>
               <ArrowRight className="w-4 h-4" />

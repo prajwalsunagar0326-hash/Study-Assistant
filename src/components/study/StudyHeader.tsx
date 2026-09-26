@@ -30,33 +30,33 @@ export const StudyHeader: React.FC<StudyHeaderProps> = ({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-4">
+    <div className="w-full max-w-4xl mx-auto space-y-3">
       {/* Title & Top Actions */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-[var(--border-subtle)]">
-        <div className="space-y-1">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-[var(--border-subtle)]">
+        <div className="space-y-0.5">
           <div className="flex items-center gap-2">
             <span className="badge badge-mode">
               <Sparkles className="w-3 h-3" />
               <span>Study Module</span>
             </span>
-            <span className="text-xs text-[var(--muted)]">
+            <span className="text-[11px] text-[var(--muted)]">
               {studyPlan.flashcards.length} cards • {studyPlan.quiz.questions.length} quiz questions
             </span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--foreground)]">
+          <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-[var(--foreground)]">
             {studyPlan.title}
           </h2>
-          <p className="text-xs sm:text-sm text-[var(--muted)] max-w-2xl leading-relaxed">
+          <p className="text-xs text-[var(--muted)] max-w-2xl leading-normal line-clamp-2">
             {studyPlan.summary}
           </p>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2 shrink-0 self-start md:self-center">
+        <div className="flex items-center gap-1.5 shrink-0 self-start sm:self-center">
           <button
             type="button"
             onClick={() => saveStudySet(studyPlan)}
-            className={`btn-secondary text-xs px-3 py-2 ${
+            className={`btn-secondary text-xs px-2.5 py-1.5 ${
               isAlreadySaved ? 'border-brand-500 text-brand-400 bg-brand-500/10' : ''
             }`}
             title="Save this study set to your local library"

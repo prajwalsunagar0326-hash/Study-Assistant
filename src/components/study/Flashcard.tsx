@@ -94,8 +94,8 @@ export const Flashcard: React.FC<FlashcardProps> = ({
             </div>
           </div>
 
-          <div className="my-auto py-6 px-2">
-            <p className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white leading-snug">
+          <div className="my-auto py-3 sm:py-4 px-2">
+            <p className="text-base sm:text-xl font-bold text-slate-900 dark:text-white leading-snug">
               {card.question}
             </p>
           </div>
@@ -134,10 +134,12 @@ export const Flashcard: React.FC<FlashcardProps> = ({
             </div>
           </div>
 
-          <div className="my-auto py-6 px-2">
-            <p className="text-base sm:text-lg text-slate-800 dark:text-slate-100 font-medium leading-relaxed">
-              {card.answer}
-            </p>
+          <div className="my-auto py-2.5 sm:py-3 px-1 w-full">
+            <div className="p-3 sm:p-4 rounded-xl bg-purple-500/5 dark:bg-purple-950/20 border border-purple-500/20 text-center">
+              <p className="text-sm sm:text-base text-slate-800 dark:text-slate-100 font-medium leading-relaxed">
+                {card.answer}
+              </p>
+            </div>
           </div>
 
           <div className="flex items-center justify-center gap-1.5 text-xs text-purple-600 dark:text-purple-300 font-medium">

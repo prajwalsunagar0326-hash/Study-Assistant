@@ -132,9 +132,9 @@ export const FlashcardView: React.FC<FlashcardViewProps> = ({
   const progressPercent = Math.round(((currentIndex + 1) / totalCards) * 100);
 
   return (
-    <div className="w-full max-w-3xl mx-auto space-y-6">
+    <div className="w-full max-w-3xl mx-auto space-y-3 sm:space-y-4">
       {/* Progress Header */}
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         <div className="flex items-center justify-between text-xs font-semibold text-[var(--muted)]">
           <span className="flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-indigo-400" />

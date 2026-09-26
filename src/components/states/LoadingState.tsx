@@ -42,7 +42,7 @@ export const LoadingState: React.FC<LoadingStateProps> = ({ stage, onCancel }) =
         </div>
 
         {/* Progressive UX Stage Indicators */}
-        <div className="space-y-2.5 max-w-md mx-auto text-left pt-2">
+        <div className="space-y-2 max-w-md mx-auto text-left pt-1">
           {STAGES.map((s, idx) => {
             const isCompleted = idx < currentStageIndex;
             const isCurrent = idx === currentStageIndex;
@@ -51,18 +51,18 @@ export const LoadingState: React.FC<LoadingStateProps> = ({ stage, onCancel }) =
                 key={s.key}
                 className={`flex items-center gap-3 p-2.5 rounded-lg border text-xs sm:text-sm transition-all duration-300 ${
                   isCurrent
-                    ? 'bg-indigo-500/15 border-indigo-500/40 text-white font-medium shadow-sm'
+                    ? 'bg-indigo-500/15 border-indigo-500/40 text-indigo-950 dark:text-white font-semibold shadow-sm'
                     : isCompleted
-                    ? 'bg-[var(--surface-glass)] border-emerald-500/20 text-emerald-300/80'
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-300 font-medium'
                     : 'bg-transparent border-transparent text-[var(--muted-dark)]'
                 }`}
               >
                 {isCompleted ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 ) : isCurrent ? (
-                  <div className="w-4 h-4 rounded-full border-2 border-indigo-400 border-t-transparent animate-spin shrink-0" />
+                  <div className="w-4 h-4 rounded-full border-2 border-indigo-600 dark:border-indigo-400 border-t-transparent animate-spin shrink-0" />
                 ) : (
-                  <div className="w-4 h-4 rounded-full border border-slate-700 shrink-0" />
+                  <div className="w-4 h-4 rounded-full border border-slate-300 dark:border-slate-700 shrink-0" />
                 )}
                 <span>{s.label}</span>
               </div>
@@ -70,21 +70,12 @@ export const LoadingState: React.FC<LoadingStateProps> = ({ stage, onCancel }) =
           })}
         </div>
 
-        {/* Skeleton Card Preview */}
-        <div className="pt-2">
-          <div className="p-4 rounded-xl bg-slate-900/60 border border-[var(--border-subtle)] space-y-3 opacity-60 animate-pulse">
-            <div className="h-4 bg-slate-800 rounded w-1/3 mx-auto" />
-            <div className="h-3 bg-slate-850 rounded w-4/5 mx-auto" />
-            <div className="h-3 bg-slate-850 rounded w-3/5 mx-auto" />
-          </div>
-        </div>
-
         {/* Cancel Action */}
-        <div className="pt-2">
+        <div className="pt-3">
           <button
             type="button"
             onClick={onCancel}
-            className="btn-ghost text-xs text-[var(--muted)] hover:text-rose-400 transition-colors"
+            className="btn-ghost text-xs text-[var(--muted)] hover:text-rose-500 transition-colors"
           >
             <XCircle className="w-3.5 h-3.5" />
             <span>Cancel Request</span>

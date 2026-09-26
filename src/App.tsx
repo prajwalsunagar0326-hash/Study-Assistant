@@ -180,20 +180,20 @@ const AppContent: React.FC = () => {
           )}
 
           {activeTab === 'study' && (
-            <div className="w-full max-w-4xl mx-auto space-y-3">
+            <div className="w-full max-w-5xl mx-auto space-y-4">
               {/* If no study plan has been generated yet, show the Hero and Input Area */}
               {!studyPlan && !isLoading && !error && (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {/* Hero Section */}
-                  <div ref={heroRef} className="text-center space-y-1">
-                    <div className="hero-element inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-[10px] font-semibold text-indigo-700 dark:text-indigo-300">
-                      <ShieldCheck className="w-3 h-3 text-indigo-600 dark:text-indigo-400" />
+                  <div ref={heroRef} className="text-center space-y-1.5 pt-1">
+                    <div className="hero-element inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-[11px] font-semibold text-indigo-700 dark:text-indigo-300">
+                      <ShieldCheck className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                       <span>Non-Chatbot Structured Learning Engine</span>
                     </div>
-                    <h1 className="hero-element text-xl sm:text-3xl font-extrabold tracking-tight text-[var(--foreground)]">
+                    <h1 className="hero-element text-2xl sm:text-4xl font-extrabold tracking-tight text-[var(--foreground)]">
                       Study smarter. <span className="gradient-text">Learn faster.</span>
                     </h1>
-                    <p className="hero-element text-xs text-[var(--muted)] max-w-lg mx-auto leading-relaxed">
+                    <p className="hero-element text-xs sm:text-sm text-[var(--muted)] max-w-xl mx-auto leading-relaxed">
                       Paste notes or enter a topic to generate interactive flashcards or a quiz in seconds.
                     </p>
                   </div>
@@ -222,7 +222,7 @@ const AppContent: React.FC = () => {
 
               {/* Active Study Plan Workspace */}
               {!isLoading && !error && studyPlan && (
-                <div className="space-y-8 animate-fade-in">
+                <div className="space-y-4 sm:space-y-5 animate-fade-in max-w-4xl mx-auto">
                   {/* Header: Title, Summary, Navigation Tabs, Export */}
                   <StudyHeader
                     studyPlan={studyPlan}
