@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ArrowLeft, ArrowRight, RotateCcw, Brain, CheckCircle, Sparkles, RefreshCw } from 'lucide-react';
 import { Flashcard as FlashcardType } from '../../types/study';
 import { Flashcard } from './Flashcard';
+import { useProductivity } from '../../context/ProductivityContext';
 
 interface FlashcardViewProps {
   cards: FlashcardType[];
@@ -14,6 +15,7 @@ export const FlashcardView: React.FC<FlashcardViewProps> = ({
   onTakeQuiz,
   onNewTopic,
 }) => {
+  const { recordFlashcardReview, recordActivity } = useProductivity();
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isFlipped, setIsFlipped] = useState<boolean>(false);
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
@@ -31,8 +33,13 @@ export const FlashcardView: React.FC<FlashcardViewProps> = ({
       setCurrentIndex((prev) => prev + 1);
     } else {
       setIsCompleted(true);
+      recordFlashcardReview(totalCards);
+      recordActivity({
+        type: 'study',
+        title: `Completed review of ${totalCards} flashcards`,
+      });
     }
-  }, [currentIndex, totalCards]);
+  }, [currentIndex, totalCards, recordFlashcardReview, recordActivity]);
 
   const handlePrev = useCallback(() => {
     if (currentIndex > 0) {

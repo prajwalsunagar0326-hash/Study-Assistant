@@ -1,6 +1,7 @@
 import React from 'react';
-import { Layers, Brain, Download, RotateCcw, Sparkles } from 'lucide-react';
+import { Layers, Brain, Download, RotateCcw, Sparkles, Bookmark as BookmarkIcon, Check } from 'lucide-react';
 import { StudyMode, StudyPlan } from '../../types/study';
+import { useProductivity } from '../../context/ProductivityContext';
 
 interface StudyHeaderProps {
   studyPlan: StudyPlan;
@@ -15,6 +16,9 @@ export const StudyHeader: React.FC<StudyHeaderProps> = ({
   onSwitchMode,
   onNewTopic,
 }) => {
+  const { saveStudySet, savedStudySets } = useProductivity();
+  const isAlreadySaved = savedStudySets.some((s) => s.title.toLowerCase() === studyPlan.title.toLowerCase());
+
   const handleExportJson = () => {
     const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(studyPlan, null, 2));
     const downloadAnchor = document.createElement('a');
@@ -49,6 +53,26 @@ export const StudyHeader: React.FC<StudyHeaderProps> = ({
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2 shrink-0 self-start md:self-center">
+          <button
+            type="button"
+            onClick={() => saveStudySet(studyPlan)}
+            className={`btn-secondary text-xs px-3 py-2 ${
+              isAlreadySaved ? 'border-brand-500 text-brand-400 bg-brand-500/10' : ''
+            }`}
+            title="Save this study set to your local library"
+          >
+            {isAlreadySaved ? (
+              <>
+                <Check className="w-3.5 h-3.5 text-brand-400" />
+                <span>Saved</span>
+              </>
+            ) : (
+              <>
+                <BookmarkIcon className="w-3.5 h-3.5" />
+                <span>Save Set</span>
+              </>
+            )}
+          </button>
           <button
             type="button"
             onClick={handleExportJson}

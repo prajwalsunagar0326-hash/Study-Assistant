@@ -1,264 +1,234 @@
-# StudyAI — Turn Your Notes into Interactive Learning
+# StudyAI — Productivity & Student Dashboard Platform
 
-> An interactive, AI-powered study assistant turning free-form notes and topics into 3D flashcards and active-recall quizzes. Built for the **Frontend Internship Assignment**.
+> **StudyAI — Turn your notes into interactive learning.**
+> An AI-powered study assistant and student productivity dashboard that converts free-form notes and topics into 3D flashcards and quizzes, integrated with a comprehensive client-side student productivity platform. Built for the **Frontend Internship Assignment**.
 
 [![React 19](https://img.shields.io/badge/React-19.0.0-61dafb?style=flat-square&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178c6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-6.1-646cff?style=flat-square&logo=vite)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)
 [![GSAP](https://img.shields.io/badge/GSAP-Motion-88CE02?style=flat-square)](https://gsap.com/)
 [![Zod](https://img.shields.io/badge/Zod-Runtime_Validation-3068b7?style=flat-square)](https://zod.dev/)
-[![Defensive Tests](https://img.shields.io/badge/Defensive_Parser_Tests-17%20Passing-emerald?style=flat-square)](https://github.com/)
+[![Unit Tests](https://img.shields.io/badge/Unit_Tests-31%20Passing-emerald?style=flat-square)](https://github.com/prajwalsunagar0326-hash/Study-Assistant)
 
 ---
 
 ## 1. Product Philosophy: "Not a Chatbot"
 
-The prompt establishes one firm rule: **It cannot be a chatbot.**
+The project adheres to one strict architectural principle:
 
-```
-Free-Form Notes/Topic ──> Serverless API / Express Proxy ──> Gemini 3.5 Flash-Lite ──> Strict JSON Schema ──> Runtime Zod Validation ──> Interactive React State (3D Cards / Step Quiz)
+> **AI generates structured study content → application validates it → React owns the interactive experience.**
+
+```text
+Free-Form Notes/Topic ──> Vercel API / Express Proxy ──> Gemini 3.5 Flash-Lite ──> Strict JSON Schema ──> Runtime Zod Validation ──> Interactive React State (3D Cards / Step Quiz)
 ```
 
-- **Zero conversational chatter**: Every piece of UI the student sees comes from typed, schema-validated fields (`question`, `answer`, `options`, `correctAnswer`, `explanation`, `difficulty`), never from raw dumped model completions or conversational chat bubbles.
-- **No transcript or growing message thread**: It is an active learning workspace, not a conversation.
-- **In-Memory Mistake Retry**: When a student finishes a quiz and wants to retry questions they missed, the application isolates the incorrect questions from local React state and launches a targeted retry session—**with zero additional AI calls or API latency**.
+```text
+Local Productivity Data ──> Typed Centralized Storage (storage.ts) ──> localStorage ──> Tasks / Calendar / Bookmarks / Pomodoro / Profile / Statistics
+```
+
+- **Zero conversational chatter**: UI fields are strongly typed (`question`, `answer`, `options`, `correctAnswer`, `explanation`, `difficulty`), never raw dumped chat completions.
+- **Client-Side Instant Productivity**: Tasks, calendar, bookmarks, pomodoro, search, and statistics work **instantly on the client** without unnecessary API latency or AI token burn.
+- **In-Memory Mistake Retry**: Missed quiz questions are isolated in local React memory for targeted re-testing with zero extra network round-trips.
 
 ---
 
-## 2. Key Features
+## 2. Comprehensive Feature Suite
 
-1. **Free-Form Student Input**:
-   - Accepts raw lecture notes, textbook excerpts, or concise study topics (supports up to 5,000 characters).
-   - Real-time character counter and input validation with instant topic suggestions (Java OOP, Machine Learning, DBMS Normalization, Operating Systems, Computer Networks).
+### 1. Study Dashboard
+- **Welcome Header**: Greeting with current date, student initials, and active study streak flame badge.
+- **Verified Learning Metrics**: Dynamically calculated counts for tasks completed, active streak, quiz accuracy %, cards studied, and hours focused.
+- **Today's Plan**: Interactive agenda combining tasks due today, scheduled study sessions, and exams.
+- **Quick Action Triggers**: Instant shortcuts to generate study sets, add tasks, schedule study sessions, launch Pomodoro, or browse bookmarks.
+- **Saved Study Sets**: Quick access to past generated AI topics saved directly in local storage.
 
-2. **Dual Learning Modes**:
-   - **Interactive Flashcards**: 3D perspective flip cards with question prompts, key insights, difficulty badges, and keyboard shortcuts (`Space` to flip, `←` / `→` to navigate).
-   - **Interactive Practice Quiz**: Step-by-step multiple-choice questions with 4 accessible options, instant answer checking, emerald/rose visual feedback, and comprehensive pedagogical explanations.
+### 2. Tasks / To-Do Management System
+- Strongly typed `Task` model (`id`, `title`, `description`, `completed`, `priority`, `dueDate`, `category`, `createdAt`, `completedAt`).
+- **Interactive Actions**: Create, edit, delete, complete, and reopen tasks with completion timestamps.
+- **Filtering**: All, Active, Completed, Today, Upcoming, and High Priority.
+- **Sorting**: Due date, priority level (high to low), creation time, and alphabetical.
 
-3. **In-Memory Wrong-Answer Retry**:
-   - Isolates missed questions in local component state. Retrying mistakes operates instantly in-memory without penalty or redundant LLM round-trips.
+### 3. Study Calendar
+- **Interactive Month Grid**: Visual date indicators, today indicator, previous/next month switching.
+- **Event Types**: Distinct badges for `study`, `assignment`, `exam`, `deadline`, and `other`.
+- **Day Agenda**: Selecting any date displays that day's scheduled sessions with event editing and deletion.
+- **Event Creation Modal**: Validation on title, date, start time, end time, and description.
 
-4. **GSAP Micro-Interactions**:
-   - Entrance hero stagger, mode selector transitions, and 3D card flipping built with `@gsap/react` and pure CSS 3D transforms, with full consideration for `prefers-reduced-motion`.
+### 4. Bookmark System
+- Integrated bookmarking across the entire study experience:
+  - **Flashcards**: Quick `☆ Save` / `★ Saved` star on each card.
+  - **Quiz Questions**: Bookmark challenging questions with correct answer and pedagogical explanation.
+  - **Study Sets**: Save entire generated modules to local library.
+- Dedicated **Bookmarks View** with instant type filters (`all`, `flashcard`, `quiz`, `study-set`) and text search.
 
-5. **Live Interviewer Diagnostic Mode**:
-   - Built-in simulation buttons to trigger realistic failure modes live in 10 seconds:
-     1. *Simulate Malformed JSON*
-     2. *Simulate Wrong Schema Shape*
-     3. *Simulate Server 500 Error*
+### 5. Pomodoro Focus Timer
+- **Drift-Free Accuracy**: Avoids naive `setInterval` countdown drift by calculating against target timestamp (`endTime = Date.now() + remainingMs`).
+- **Modes**: Focus (default 25 min), Short Break (5 min), and Long Break (15 min).
+- **Controls**: Start, Pause, Resume, Reset, and Skip.
+- **Customizable Settings**: User-configurable durations and long break intervals.
+- **Auto Logging**: Completed focus sessions automatically update study statistics, log activities, and increment total focus hours.
 
-6. **Export Study Set**:
-   - One-click download of the complete validated study module as a formatted `.json` file.
+### 6. Global Search (`Ctrl+K` / `Cmd+K`)
+- Unified command palette searchable across tasks, calendar events, bookmarks, and saved study sets.
+- Instant client-side fuzzy keyword matching.
+- Keyboard shortcuts (`Ctrl+K` or `Cmd+K` to toggle, `ESC` to dismiss).
+- Clickable results that navigate directly to the matching tab and item.
+
+### 7. Student Profile & Verified Statistics
+- **Editable Student Profile**: Full Name, Email, Bio, Study Goal, and Avatar Initials.
+- **Calculated Metrics**: Real-time stats derived from actual application usage:
+  - Current Study Streak (consecutive day calculation)
+  - Quiz Retention Accuracy % (`correctAnswers / totalAnswers`)
+  - Total Flashcards Reviewed
+  - Pomodoro Focus Hours
+  - Active vs. Completed Tasks
+- **Activity Consistency Log**: Displays distinct recorded study dates.
+
+### 8. AI Study Workspace (Core Experience)
+- Accepts up to 5,000 characters of notes, textbook excerpts, or topics.
+- **3D Flashcard Flip**: Perspective flip cards with keyboard navigation (`Space` to flip, `←` / `→` arrows).
+- **Practice Quiz**: Step-by-step quiz with 4 options, instant visual feedback, and explanations.
+- **Exporting**: One-click download of the complete study set as a formatted `.json` file.
+- **Diagnostic Mode**: Toggleable simulation buttons for testing malformed JSON, invalid schemas, and server errors live.
 
 ---
 
 ## 3. Architecture & Project Structure
 
-```
+```text
 flam/
 ├── api/
 │   └── generate-study.ts       # Vercel Serverless Function (Production endpoint)
 ├── server/
-│   └── server.ts               # Local Express proxy with Gemini 3.5 Flash-Lite & mock fallback
+│   └── server.ts               # Express Local Proxy (Development server on port 3001)
 ├── src/
-│   ├── types/
-│   │   └── study.ts            # TypeScript interfaces (StudyPlan, Flashcard, QuizQuestion, ApiError)
-│   ├── lib/
-│   │   ├── schemas.ts          # Runtime Zod schemas with option uniqueness & answer matching
-│   │   ├── validateStudyPlan.ts# Defensive parser: markdown stripping & schema validation
-│   │   └── api.ts              # Frontend API client with AbortController & stale request checks
-│   ├── hooks/
-│   │   ├── useStudyGeneration.ts # Generation orchestrator with race-condition guards
-│   │   └── useReducedMotion.ts   # Accessibility hook respecting OS reduced motion
 │   ├── components/
-│   │   ├── layout/
-│   │   │   └── Header.tsx      # App header, model badge, diagnostic trigger, theme toggle
-│   │   ├── study/
-│   │   │   ├── StudyInput.tsx  # Free-form textarea, character counter, diagnostic simulator
-│   │   │   ├── ModeSelector.tsx# Accessible Flashcards vs Quiz selector
-│   │   │   ├── ExamplePrompts.tsx # Quick-start topic chips
-│   │   │   ├── StudyHeader.tsx # Active study plan header, mode tabs, and export
-│   │   │   ├── FlashcardView.tsx # Flashcard session, keyboard listeners, completion panel
-│   │   │   ├── Flashcard.tsx   # 3D perspective flip card (front question / back answer)
-│   │   │   ├── QuizView.tsx    # Quiz orchestrator with in-memory retry mechanism
-│   │   │   ├── QuizQuestion.tsx# 4 accessible options, check answer, and explanation reveal
-│   │   │   └── QuizResults.tsx # Score percentage, mastery evaluation, and retry CTA
-│   │   └── states/
-│   │       ├── EmptyState.tsx  # Initial educational value proposition & call to action
-│   │       ├── LoadingState.tsx# Progressive 4-stage UX messaging with request cancellation
-│   │       └── ErrorState.tsx  # User-friendly remediation and expandable diagnostic trace
-│   ├── App.tsx                 # Main layout, GSAP entrance animation, and theme sync
-│   ├── index.css               # Glassmorphic tokens, 3D flip transforms, and CSS variables
-│   └── main.tsx                # React 19 bootstrap
+│   │   ├── bookmarks/          # BookmarkPage
+│   │   ├── calendar/           # CalendarPage, EventModal
+│   │   ├── dashboard/          # Dashboard, StatsCard, TodayPlan, QuickActions
+│   │   ├── layout/             # Sidebar, Header, MobileNav
+│   │   ├── pomodoro/           # PomodoroPage, PomodoroSettingsModal
+│   │   ├── profile/            # ProfilePage
+│   │   ├── search/             # SearchCommandModal
+│   │   ├── states/             # LoadingState, ErrorState, EmptyState
+│   │   ├── study/              # StudyInput, Flashcard, FlashcardView, QuizQuestion, QuizView, StudyHeader
+│   │   ├── tasks/              # TaskPage, TaskCard, TaskModal
+│   │   └── ui/                 # ToastContainer
+│   ├── context/
+│   │   └── ProductivityContext.tsx # Centralized state provider & activity logger
+│   ├── hooks/
+│   │   ├── useReducedMotion.ts # Accessibility hook for animation preferences
+│   │   └── useStudyGeneration.ts # Request controller, abort & stale protection
+│   ├── lib/
+│   │   ├── api.ts              # Resilient dual-endpoint client router
+│   │   ├── storage.ts          # Typed, versioned localStorage persistence
+│   │   └── validateStudyPlan.ts # Zod schema validation & JSON cleaner
+│   ├── types/
+│   │   ├── productivity.ts     # Strongly typed Task, Event, Bookmark, Profile, Stats
+│   │   └── study.ts            # Strongly typed StudyPlan, Flashcard, Quiz
+│   ├── App.tsx                 # Root layout with responsive navigation & tab routing
+│   ├── index.css               # Design tokens, glassmorphism, 3D card perspective
+│   └── main.tsx
 ├── scripts/
-│   └── test-validation.ts      # 17 automated failure-mode and schema validation tests
+│   └── test-validation.ts      # 31 automated unit tests
 ├── .env.example
-├── package.json
-└── README.md
+├── vercel.json                 # Vercel serverless deployment routing
+└── package.json
 ```
 
 ---
 
-## 4. AI Integration & Structured Output
+## 4. How AI is Used in StudyAI
 
-### Model
-- **Model**: `gemini-3.5-flash-lite`
-- **SDK**: Official `@google/genai` (v2.24)
-- **Security**: The Gemini API key is **strictly server-side** (in Express or Vercel serverless functions). No API keys are bundled or exposed to client JavaScript.
+As required by the assignment guidelines:
 
-### Why Structured Output?
-Raw LLM text completions are non-deterministic, frequently containing conversational prose or markdown formatting that cannot be safely mounted to interactive components. By configuring Gemini with a strict JSON schema contract, the AI generates structured data directly mapped to TypeScript contracts.
+1. **Structured Study Generation**: Gemini is prompted with a strict system instruction requiring a pure JSON payload matching the `StudyPlan` contract.
+2. **Defensive Parsing**: Raw responses are stripped of markdown fences (` ```json `), validated against edge-case anomalies (array roots, malformed strings), and sanitized before JSON parsing.
+3. **Runtime Schema Validation**: The parsed JSON is validated through Zod (`validateStudyPlan.ts`). If the response fails any schema rule (e.g., missing question, wrong option count, invalid difficulty), it gracefully catches the error and surfaces user remediation.
+4. **React State Ownership**: Once validated, React takes complete ownership of interactive state (flipping cards, tracking quiz score, retrying mistakes, bookmarking items, logging statistics).
+5. **Development Assistance**: AI tools were utilized during development to pair-program components, craft test cases, and refine TypeScript interfaces.
 
 ---
 
-## 5. Defensive Response Pipeline & Runtime Validation
+## 5. Automated Test Suite (31 Tests Passing)
 
-External AI output is inherently untrusted data. TypeScript only validates types at compile time; runtime validation is mandatory:
+The project includes an extensive automated test suite covering both the AI defensive layer and the productivity system:
 
-```
-User Input
-   ↓
-Frontend Validation (char count, empty checks)
-   ↓
-POST /api/generate-study (with AbortSignal)
-   ↓
-Server Proxy (holds GEMINI_API_KEY)
-   ↓
-Gemini 3.5 Flash-Lite (JSON Schema)
-   ↓
-cleanRawJson() (strips ```json code fences and conversational wrappers)
-   ↓
-JSON.parse() (wrapped in defensive try/catch)
-   ↓
-Zod Runtime Validation (validates exact types, option count, unique options, answer matching)
-   ↓
-Data Sanitization
-   ↓
-Typed React State
-   ↓
-Interactive Flashcards & Quiz
-```
+Run the test suite with:
 
-### 17 Automated Validation & Failure Tests
-
-StudyAI includes an automated test suite ([test-validation.ts](file:///c:/Users/sunga/OneDrive/Desktop/flam/scripts/test-validation.ts)) verifying 17 distinct scenarios:
-
-| # | Test Case | Expected Behavior | Result |
-| :-: | :--- | :--- | :-: |
-| 1 | **Valid StudyPlan** | Parses and validates clean study module | ✅ PASS |
-| 2 | **Empty Response** | Catches empty string as `EMPTY_RESPONSE` | ✅ PASS |
-| 3 | **Malformed JSON** | Catches syntax errors (unclosed brackets) safely | ✅ PASS |
-| 4 | **Markdown Wrapped JSON** | Strips ` ```json ` fences before parsing | ✅ PASS |
-| 5 | **Wrong Root Shape** | Rejects array root as `SCHEMA_VALIDATION_ERROR` | ✅ PASS |
-| 6 | **Missing Title** | Rejects plan missing a title | ✅ PASS |
-| 7 | **Missing Flashcards** | Rejects plan without flashcards key | ✅ PASS |
-| 8 | **Empty Flashcards** | Rejects 0-item flashcard array | ✅ PASS |
-| 9 | **Invalid Flashcard** | Rejects flashcard with blank question | ✅ PASS |
-| 10 | **Invalid Difficulty** | Rejects unknown difficulty level (e.g. "extreme") | ✅ PASS |
-| 11 | **Quiz Missing** | Rejects plan without quiz object | ✅ PASS |
-| 12 | **Quiz With No Questions** | Rejects quiz with 0 questions | ✅ PASS |
-| 13 | **Wrong Option Count** | Rejects questions with 3 options (requires 4) | ✅ PASS |
-| 14 | **Duplicate Options** | Rejects questions containing non-unique options | ✅ PASS |
-| 15 | **correctAnswer Mismatch** | Rejects questions where answer isn't in options | ✅ PASS |
-| 16 | **Valid Quiz** | Accepts multi-question quiz meeting all rules | ✅ PASS |
-| 17 | **Stale Request Guard** | Ensures slower older request is discarded | ✅ PASS |
-
-Run the test suite anytime:
 ```bash
 npm test
 ```
 
+### Verified Test Cases:
+- **1-16. AI Schema & Defensive Parsing**:
+  - Valid StudyPlan happy path
+  - Empty response detection
+  - Malformed JSON handling without crashing
+  - Markdown code fence stripping
+  - Array root rejection
+  - Missing title rejection
+  - Empty flashcards array rejection
+  - Question validation & difficulty checks
+  - Quiz structure, 4 distinct options, and correct answer validation
+  - Multi-question quiz verification
+- **17. Stale Request Protection**: Prevents older delayed API responses from overwriting newer generations.
+- **18-20. Task Management**: Creation, completion timestamping, filtering (active, high, today), and priority sorting.
+- **21-24. Global Search**: Multi-entity keyword matching, deep content search, and empty state returns.
+- **25. Pomodoro Drift Prevention**: Timestamp-based computation validation.
+- **26-28. Deterministic Study Streak**: Consecutive day chain calculation, gap reset handling, and empty activity states.
+- **29. Quiz Accuracy Calculation**: Accurate rounding and zero-attempt guard.
+- **30-31. Storage Recovery**: Malformed JSON recovery and version migration fallbacks.
+
 ---
 
-## 6. Stale Request & Concurrency Protection
-
-If a student submits request A on a slow network and quickly re-submits request B:
-1. `useStudyGeneration` tracks an incremental `requestIdRef.current`.
-2. Any active network request is immediately aborted via `AbortController`.
-3. If response A somehow arrives after response B, its request ID no longer matches `requestIdRef.current` and it is discarded silently.
-4. The user's active UI is never overwritten by an out-of-order stale response.
-
----
-
-## 7. Quickstart & Local Setup
-
-The repository is built to **work immediately out of the box** (`npm install && npm start`), even without configuring an API key, thanks to a high-fidelity offline educational engine.
+## 6. How to Run Locally
 
 ### Prerequisites
-- Node.js (v18+)
-- npm
+- Node.js 18+ (Node 20 or 22 recommended)
+- Google AI Studio Gemini API Key
 
-### 1. Installation
+### Step 1: Clone and Install
 ```bash
+git clone https://github.com/prajwalsunagar0326-hash/Study-Assistant.git
+cd Study-Assistant
 npm install
 ```
 
-### 2. Configure Environment (Optional)
-If you wish to use live Gemini 3.5 Flash-Lite instead of the built-in mock fallback, copy `.env.example` to `.env`:
+### Step 2: Environment Configuration
+Create a `.env` file in the project root:
 ```bash
-cp .env.example .env
-```
-And add your Google Gemini API key:
-```env
-PORT=3001
 GEMINI_API_KEY=your_gemini_api_key_here
+PORT=3001
 ```
 
-### 3. Start Development Server
+> **Security Note**: Never expose `GEMINI_API_KEY` through client-side `VITE_` variables. The server proxy and Vercel functions keep the key strictly server-side.
+
+### Step 3: Run the Development Server
 ```bash
-npm start
-# or npm run dev
+npm run dev
 ```
-- **Frontend**: [http://localhost:5173](http://localhost:5173)
-- **Backend Proxy**: [http://localhost:3001](http://localhost:3001)
+This runs Vite frontend (`http://localhost:5173`) and the Express proxy (`http://localhost:3001`) concurrently.
 
-### 4. Run Test Suite
+### Step 4: Run Tests & Build
 ```bash
-npm test
-```
-
-### 5. Production Build
-```bash
-npm run build
+npm test          # Run 31 automated tests
+npm run build     # Validate TypeScript & build production bundle
 ```
 
 ---
 
-## 8. Vercel Deployment
+## 7. How to Deploy to Vercel
 
-StudyAI is architected for Vercel deployment:
-- `api/generate-study.ts` provides a serverless function handler directly recognized by Vercel.
-- The browser fetches `/api/generate-study`, keeping the `GEMINI_API_KEY` protected on the server.
-- Add `GEMINI_API_KEY` in the **Vercel Project Settings → Environment Variables**.
-
----
-
-## 9. AI Usage Disclosure
-
-In accordance with assignment requirements:
-- **AI Tools Used**: Google Gemini Flash & Claude for architecture scaffolding, prompt phrasing refinement, and initial skeleton generation.
-- **Human Implementation & Ownership**:
-  - Authored the defensive schema validator ([validateStudyPlan.ts](file:///c:/Users/sunga/OneDrive/Desktop/flam/src/lib/validateStudyPlan.ts)) and 17-test failure suite ([test-validation.ts](file:///c:/Users/sunga/OneDrive/Desktop/flam/scripts/test-validation.ts)).
-  - Implemented the stale request concurrency guard (`requestIdRef` + `AbortController`).
-  - Designed the in-memory wrong answer retry mechanism without duplicate LLM calls.
-  - Implemented the 3D flip card transform, accessibility keyboard controls, and CSS variable design system.
-
----
-
-## 10. Known Limitations & Future Improvements
-
-- **AI Educational Nuance**: Like all LLMs, generated answers should be reviewed by instructors for high-stakes examinations.
-- **Persistence**: Sessions currently live in React state; local storage or cloud database sync (e.g. Supabase) would allow cross-device study sessions.
-- **Anki Export**: Future versions can export study sets as `.apkg` files for direct import into Anki.
-- **Spaced Repetition System (SRS)**: Implementing an SM-2 scheduling algorithm to re-surface flashcards based on user confidence ratings.
-
----
-
-## 11. Time Spent Breakdown
-
-- **Domain Architecture & Schema Contracts**: ~1.0 hour (Zod schemas, types, error taxonomy)
-- **Backend & Vercel Serverless Integration**: ~1.0 hour (Express proxy, Gemini 3.5 Flash-Lite, mock fallback)
-- **Defensive Parser & 17-Test Failure Suite**: ~1.5 hours (cleaning fences, shape validation, assertions)
-- **Interactive UI (Flashcards & Quiz)**: ~2.5 hours (3D card flip, step-by-step quiz, in-memory retry)
-- **Motion, Design System & Accessibility**: ~1.5 hours (GSAP entrance, keyboard navigation, dark/light theme)
-- **Total Time**: ~7.5 hours (within the 8-hour target)
+1. Push your code to your GitHub repository:
+   ```bash
+   git add .
+   git commit -m "feat: complete student productivity platform with dashboard, tasks, calendar, bookmarks, and pomodoro"
+   git push origin main
+   ```
+2. Import the repository in [Vercel](https://vercel.com).
+3. Set Framework Preset to **Vite**.
+4. Add the Environment Variable in Vercel Project Settings:
+   - Key: `GEMINI_API_KEY`
+   - Value: `your_gemini_api_key`
+5. Click **Deploy**. Vercel will build the frontend and serve `/api/generate-study` as a serverless function automatically via `vercel.json`.

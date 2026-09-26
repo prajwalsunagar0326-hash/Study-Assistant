@@ -1,7 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { ProductivityProvider, useProductivity } from './context/ProductivityContext';
+import { Sidebar } from './components/layout/Sidebar';
 import { Header } from './components/layout/Header';
+import { MobileNav } from './components/layout/MobileNav';
+import { ToastContainer } from './components/ui/ToastContainer';
+import { SearchCommandModal } from './components/search/SearchCommandModal';
+
+import { Dashboard } from './components/dashboard/Dashboard';
+import { TaskPage } from './components/tasks/TaskPage';
+import { CalendarPage } from './components/calendar/CalendarPage';
+import { BookmarkPage } from './components/bookmarks/BookmarkPage';
+import { PomodoroPage } from './components/pomodoro/PomodoroPage';
+import { ProfilePage } from './components/profile/ProfilePage';
+
 import { StudyInput } from './components/study/StudyInput';
 import { StudyHeader } from './components/study/StudyHeader';
 import { FlashcardView } from './components/study/FlashcardView';
@@ -9,12 +22,13 @@ import { QuizView } from './components/study/QuizView';
 import { LoadingState } from './components/states/LoadingState';
 import { ErrorState } from './components/states/ErrorState';
 import { EmptyState } from './components/states/EmptyState';
+
 import { useStudyGeneration } from './hooks/useStudyGeneration';
 import { useReducedMotion } from './hooks/useReducedMotion';
-import { StudyMode } from './types/study';
+import { StudyMode, StudyPlan } from './types/study';
 import { ShieldCheck } from 'lucide-react';
 
-export const App: React.FC = () => {
+const AppContent: React.FC = () => {
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('studyai-theme');
@@ -29,6 +43,8 @@ export const App: React.FC = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
+  const { activeTab, setActiveTab } = useProductivity();
+
   const {
     studyPlan,
     mode,
@@ -40,6 +56,7 @@ export const App: React.FC = () => {
     cancelGeneration,
     retry,
     resetToNewTopic,
+    setStudyPlan,
   } = useStudyGeneration();
 
   // Synchronize theme with HTML document attribute
@@ -59,7 +76,7 @@ export const App: React.FC = () => {
 
       const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
 
-      if (heroRef.current) {
+      if (heroRef.current && activeTab === 'study') {
         tl.fromTo(
           '.hero-element',
           { opacity: 0, y: 16 },
@@ -72,112 +89,165 @@ export const App: React.FC = () => {
         );
       }
     },
-    { scope: containerRef, dependencies: [prefersReducedMotion] }
+    { scope: containerRef, dependencies: [prefersReducedMotion, activeTab] }
   );
 
   const handleGenerate = (promptText: string, selectedMode: StudyMode) => {
     generate(promptText, selectedMode);
   };
 
+  const handleLoadStudyPlan = (plan: StudyPlan) => {
+    setStudyPlan(plan);
+    setActiveTab('study');
+  };
+
   return (
-    <div ref={containerRef} className="min-h-screen flex flex-col transition-colors duration-300">
-      {/* Top Header */}
-      <Header
-        isDiagnosticOpen={isDiagnosticOpen}
-        onToggleDiagnostic={() => setIsDiagnosticOpen((prev) => !prev)}
+    <div
+      ref={containerRef}
+      className="min-h-screen flex bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300 antialiased"
+    >
+      {/* Desktop Sidebar (hidden on mobile, fixed desktop left) */}
+      <Sidebar
         theme={theme}
         onToggleTheme={toggleTheme}
+        className="hidden lg:flex"
       />
 
-      {/* Main Workspace Body */}
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-8">
-        {/* If no study plan has been generated yet, show the Hero and Input Area */}
-        {!studyPlan && !isLoading && !error && (
-          <div className="space-y-8">
-            {/* Hero Section */}
-            <div ref={heroRef} className="text-center space-y-3 pt-2 sm:pt-4">
-              <div className="hero-element inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/25 text-xs font-semibold text-indigo-300">
-                <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
-                <span>Non-Chatbot Structured Learning Engine</span>
-              </div>
-              <h1 className="hero-element text-3xl sm:text-5xl font-extrabold tracking-tight text-[var(--foreground)]">
-                Study smarter. <span className="gradient-text">Learn faster.</span>
-              </h1>
-              <p className="hero-element text-sm sm:text-base text-[var(--muted)] max-w-xl mx-auto leading-relaxed">
-                Paste your notes or enter a topic. StudyAI turns them into interactive flashcards or a quiz in seconds.
-              </p>
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 pb-20 lg:pb-0 overflow-y-auto">
+        {/* Top Header */}
+        <Header
+          isDiagnosticOpen={isDiagnosticOpen}
+          onToggleDiagnostic={() => setIsDiagnosticOpen((prev) => !prev)}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+        />
+
+        {/* View Body based on activeTab */}
+        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          {activeTab === 'dashboard' && (
+            <Dashboard onLoadStudyPlan={handleLoadStudyPlan} />
+          )}
+
+          {activeTab === 'study' && (
+            <div className="max-w-5xl mx-auto space-y-8">
+              {/* If no study plan has been generated yet, show the Hero and Input Area */}
+              {!studyPlan && !isLoading && !error && (
+                <div className="space-y-8">
+                  {/* Hero Section */}
+                  <div ref={heroRef} className="text-center space-y-3 pt-2 sm:pt-4">
+                    <div className="hero-element inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/25 text-xs font-semibold text-indigo-300">
+                      <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
+                      <span>Non-Chatbot Structured Learning Engine</span>
+                    </div>
+                    <h1 className="hero-element text-3xl sm:text-5xl font-extrabold tracking-tight text-[var(--foreground)]">
+                      Study smarter. <span className="gradient-text">Learn faster.</span>
+                    </h1>
+                    <p className="hero-element text-sm sm:text-base text-[var(--muted)] max-w-xl mx-auto leading-relaxed">
+                      Paste your notes or enter a topic. StudyAI turns them into interactive flashcards or a quiz in seconds.
+                    </p>
+                  </div>
+
+                  {/* Input Panel */}
+                  <div className="input-panel-anim">
+                    <StudyInput
+                      onGenerate={handleGenerate}
+                      isLoading={isLoading}
+                      isDiagnosticOpen={isDiagnosticOpen}
+                      defaultMode={mode}
+                    />
+                  </div>
+
+                  {/* Empty State Features */}
+                  <EmptyState />
+                </div>
+              )}
+
+              {/* Loading State with progressive UX stages & cancellation */}
+              {isLoading && (
+                <LoadingState stage={loadingStage} onCancel={cancelGeneration} />
+              )}
+
+              {/* Error State with user-friendly remediation & retry */}
+              {!isLoading && error && (
+                <ErrorState error={error} onRetry={retry} onBack={resetToNewTopic} />
+              )}
+
+              {/* Active Study Plan Workspace */}
+              {!isLoading && !error && studyPlan && (
+                <div className="space-y-8 animate-fade-in">
+                  {/* Header: Title, Summary, Navigation Tabs, Export */}
+                  <StudyHeader
+                    studyPlan={studyPlan}
+                    activeMode={mode}
+                    onSwitchMode={(newMode) => setMode(newMode)}
+                    onNewTopic={resetToNewTopic}
+                  />
+
+                  {/* Mode Content: Flashcards vs Quiz */}
+                  {mode === 'flashcards' ? (
+                    <FlashcardView
+                      cards={studyPlan.flashcards}
+                      onTakeQuiz={() => setMode('quiz')}
+                      onNewTopic={resetToNewTopic}
+                    />
+                  ) : (
+                    <QuizView
+                      questions={studyPlan.quiz.questions}
+                      onReviewFlashcards={() => setMode('flashcards')}
+                      onNewTopic={resetToNewTopic}
+                    />
+                  )}
+                </div>
+              )}
             </div>
+          )}
 
-            {/* Input Panel */}
-            <div className="input-panel-anim">
-              <StudyInput
-                onGenerate={handleGenerate}
-                isLoading={isLoading}
-                isDiagnosticOpen={isDiagnosticOpen}
-                defaultMode={mode}
-              />
+          {activeTab === 'tasks' && <TaskPage />}
+
+          {activeTab === 'calendar' && <CalendarPage />}
+
+          {activeTab === 'bookmarks' && <BookmarkPage />}
+
+          {activeTab === 'pomodoro' && <PomodoroPage />}
+
+          {activeTab === 'profile' && <ProfilePage />}
+        </main>
+
+        {/* Global Footer */}
+        <footer className="w-full border-t border-[var(--border-subtle)] bg-[var(--surface-glass)] py-6 mt-auto">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--muted)]">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-[var(--foreground)]">StudyAI</span>
+              <span>•</span>
+              <span>Turn your notes into interactive learning</span>
             </div>
-
-            {/* Empty State Features */}
-            <EmptyState />
+            <div className="flex items-center gap-4">
+              <span className="text-[11px] text-[var(--muted-dark)]">
+                Strict Structured JSON & Runtime Zod Schema • Client-Side Productivity
+              </span>
+            </div>
           </div>
-        )}
+        </footer>
+      </div>
 
-        {/* Loading State with progressive UX stages & cancellation */}
-        {isLoading && (
-          <LoadingState stage={loadingStage} onCancel={cancelGeneration} />
-        )}
+      {/* Mobile Bottom Navigation (fixed on small viewports, lg:hidden) */}
+      <MobileNav />
 
-        {/* Error State with user-friendly remediation & retry */}
-        {!isLoading && error && (
-          <ErrorState error={error} onRetry={retry} onBack={resetToNewTopic} />
-        )}
+      {/* Global Command Palette / Search Modal (Ctrl+K) */}
+      <SearchCommandModal />
 
-        {/* Active Study Plan Workspace */}
-        {!isLoading && !error && studyPlan && (
-          <div className="space-y-8 animate-fade-in">
-            {/* Header: Title, Summary, Navigation Tabs, Export */}
-            <StudyHeader
-              studyPlan={studyPlan}
-              activeMode={mode}
-              onSwitchMode={(newMode) => setMode(newMode)}
-              onNewTopic={resetToNewTopic}
-            />
-
-            {/* Mode Content: Flashcards vs Quiz */}
-            {mode === 'flashcards' ? (
-              <FlashcardView
-                cards={studyPlan.flashcards}
-                onTakeQuiz={() => setMode('quiz')}
-                onNewTopic={resetToNewTopic}
-              />
-            ) : (
-              <QuizView
-                questions={studyPlan.quiz.questions}
-                onReviewFlashcards={() => setMode('flashcards')}
-                onNewTopic={resetToNewTopic}
-              />
-            )}
-          </div>
-        )}
-      </main>
-
-      {/* Footer */}
-      <footer className="w-full border-t border-[var(--border-subtle)] bg-[var(--surface-glass)] py-6 mt-auto">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--muted)]">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-[var(--foreground)]">StudyAI</span>
-            <span>•</span>
-            <span>Turn your notes into interactive learning</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-[11px] text-[var(--muted-dark)]">
-              Strict Structured JSON & Runtime Zod Schema
-            </span>
-          </div>
-        </div>
-      </footer>
+      {/* Non-intrusive Toast Notifications */}
+      <ToastContainer />
     </div>
+  );
+};
+
+export const App: React.FC = () => {
+  return (
+    <ProductivityProvider>
+      <AppContent />
+    </ProductivityProvider>
   );
 };
 

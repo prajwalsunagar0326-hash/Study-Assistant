@@ -3,6 +3,7 @@ import { QuizQuestion as QuizQuestionType } from '../../types/study';
 import { QuizQuestion } from './QuizQuestion';
 import { QuizResults } from './QuizResults';
 import { Sparkles, RotateCcw } from 'lucide-react';
+import { useProductivity } from '../../context/ProductivityContext';
 
 interface QuizViewProps {
   questions: QuizQuestionType[];
@@ -15,6 +16,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
   onReviewFlashcards,
   onNewTopic,
 }) => {
+  const { recordQuizCompletion, recordActivity } = useProductivity();
   const [activeQuestions, setActiveQuestions] = useState<QuizQuestionType[]>(initialQuestions);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -56,6 +58,11 @@ export const QuizView: React.FC<QuizViewProps> = ({
       setCurrentIndex((prev) => prev + 1);
     } else {
       setIsCompleted(true);
+      recordQuizCompletion(score, totalQuestions);
+      recordActivity({
+        type: 'quiz',
+        title: `Finished quiz with score ${score}/${totalQuestions}`,
+      });
     }
   };
 

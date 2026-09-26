@@ -1,6 +1,7 @@
 import React from 'react';
-import { CheckCircle2, XCircle, HelpCircle, ArrowRight, Sparkles } from 'lucide-react';
+import { CheckCircle2, XCircle, HelpCircle, ArrowRight, Sparkles, Bookmark as BookmarkIcon } from 'lucide-react';
 import { QuizQuestion as QuizQuestionType } from '../../types/study';
+import { useProductivity } from '../../context/ProductivityContext';
 
 interface QuizQuestionProps {
   question: QuizQuestionType;
@@ -25,6 +26,28 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
   onNextQuestion,
   isLastQuestion,
 }) => {
+  const { isBookmarked, addBookmark, removeBookmark } = useProductivity();
+  const bookmarked = isBookmarked(question.id);
+
+  const toggleBookmark = () => {
+    if (bookmarked) {
+      removeBookmark(question.id);
+    } else {
+      addBookmark({
+        type: 'quiz',
+        title: question.question,
+        content: `Correct Answer: ${question.correctAnswer}. ${question.explanation}`,
+        sourceId: question.id,
+        metadata: {
+          difficulty: question.difficulty,
+          options: question.options,
+          correctAnswer: question.correctAnswer,
+          explanation: question.explanation,
+        },
+      });
+    }
+  };
+
   const isSelected = (opt: string) => selectedOption === opt;
   const isCorrect = (opt: string) => opt.trim() === question.correctAnswer.trim();
 
@@ -38,7 +61,22 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
             <HelpCircle className="w-4 h-4" />
             <span>QUESTION {questionNumber} OF {totalQuestions}</span>
           </div>
-          <span className="badge badge-medium capitalize">{question.difficulty}</span>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={toggleBookmark}
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                bookmarked
+                  ? 'bg-amber-500/25 text-amber-300 border border-amber-500/50'
+                  : 'bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700'
+              }`}
+              aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark question'}
+            >
+              <BookmarkIcon className={`w-3.5 h-3.5 ${bookmarked ? 'fill-current text-amber-400' : ''}`} />
+              <span>{bookmarked ? '★ Saved' : '☆ Save'}</span>
+            </button>
+            <span className="badge badge-medium capitalize">{question.difficulty}</span>
+          </div>
         </div>
 
         {/* Question Prompt */}

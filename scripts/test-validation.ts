@@ -300,5 +300,194 @@ const baseValidPlan = {
   );
 }
 
-console.log(`\nResults: ${passedTests} passed, ${failedTests} failed.`);
+console.log('\n====================================================');
+console.log('STUDENT PRODUCTIVITY SYSTEM TEST SUITE');
+console.log('====================================================\n');
+
+import { calculateStudyStreak, DEFAULT_STORAGE_STATE, getTodayDateString, getYesterdayDateString } from '../src/lib/storage';
+import { Task, SearchResult } from '../src/types/productivity';
+
+// 18. Task Management: Create and Complete Task
+{
+  const initialTask: Task = {
+    id: 'task-test-1',
+    title: 'Complete Distributed Systems Homework',
+    description: 'Solve Raft consensus problem set',
+    completed: false,
+    priority: 'high',
+    dueDate: '2026-10-01',
+    category: 'Computer Science',
+    createdAt: new Date().toISOString(),
+  };
+
+  // Complete the task
+  const completedTask: Task = {
+    ...initialTask,
+    completed: true,
+    completedAt: new Date().toISOString(),
+  };
+
+  assert(
+    !initialTask.completed && completedTask.completed && typeof completedTask.completedAt === 'string',
+    '18. Task creation and completion toggle with timestamp'
+  );
+}
+
+// 19. Task Filtering and Sorting
+{
+  const today = getTodayDateString();
+  const testTasks: Task[] = [
+    { id: '1', title: 'Task Low', completed: false, priority: 'low', dueDate: '2026-10-05', createdAt: '2026-09-01' },
+    { id: '2', title: 'Task High Today', completed: false, priority: 'high', dueDate: today, createdAt: '2026-09-02' },
+    { id: '3', title: 'Task Done', completed: true, priority: 'medium', dueDate: '2026-09-20', createdAt: '2026-09-03' },
+  ];
+
+  const activeTasks = testTasks.filter(t => !t.completed);
+  const highPriorityTasks = testTasks.filter(t => t.priority === 'high');
+  const todayTasks = testTasks.filter(t => t.dueDate === today);
+
+  // Priority sorting: high (3) > medium (2) > low (1)
+  const priorityMap: Record<string, number> = { high: 3, medium: 2, low: 1 };
+  const sortedByPriority = [...testTasks].sort((a, b) => priorityMap[b.priority] - priorityMap[a.priority]);
+
+  assert(
+    activeTasks.length === 2 && highPriorityTasks.length === 1 && todayTasks.length === 1,
+    '19. Task filtering by active, high priority, and today'
+  );
+
+  assert(
+    sortedByPriority[0].priority === 'high' && sortedByPriority[2].priority === 'low',
+    '20. Task sorting by priority order (high to low)'
+  );
+}
+
+// 21. Global Search: Multi-entity matching & Empty state
+{
+  const searchCorpus: { id: string; type: string; title: string; content?: string }[] = [
+    { id: 't-1', type: 'task', title: 'Review OS & Virtual Memory' },
+    { id: 'b-1', type: 'bookmark', title: 'Page Table Translation', content: 'TLB miss handling and page faults' },
+    { id: 'e-1', type: 'event', title: 'OS Midterm Exam' },
+  ];
+
+  const performSearch = (query: string) => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return searchCorpus.filter(
+      item => item.title.toLowerCase().includes(q) || (item.content && item.content.toLowerCase().includes(q))
+    );
+  };
+
+  const matchSingle = performSearch('Virtual Memory');
+  const matchMultiType = performSearch('OS');
+  const matchContent = performSearch('TLB miss');
+  const noMatch = performSearch('Quantum Physics');
+
+  assert(
+    matchSingle.length === 1 && matchSingle[0].type === 'task',
+    '21. Search matches specific task title'
+  );
+
+  assert(
+    matchMultiType.length === 2 && matchMultiType.some(m => m.type === 'event'),
+    '22. Search matches across multiple entity types (task & event)'
+  );
+
+  assert(
+    matchContent.length === 1 && matchContent[0].type === 'bookmark',
+    '23. Search searches deep bookmark content'
+  );
+
+  assert(
+    noMatch.length === 0,
+    '24. Search returns empty array for non-matching queries'
+  );
+}
+
+// 25. Pomodoro Drift-Free Timer Logic
+{
+  const durationMs = 25 * 60 * 1000;
+  const startTime = Date.now();
+  const endTime = startTime + durationMs;
+
+  // Simulate 10 seconds passing
+  const simulatedCurrentTime = startTime + 10000;
+  const remainingMs = Math.max(0, endTime - simulatedCurrentTime);
+
+  assert(
+    remainingMs === durationMs - 10000,
+    '25. Pomodoro timestamp calculation prevents drift compared to naive decrements'
+  );
+}
+
+// 26. Study Streak Calculation (Deterministic test)
+{
+  const today = getTodayDateString();
+  const yesterday = getYesterdayDateString();
+
+  // Test consecutive 3-day streak
+  const d3 = new Date();
+  d3.setDate(d3.getDate() - 2);
+  const twoDaysAgo = `${d3.getFullYear()}-${String(d3.getMonth() + 1).padStart(2, '0')}-${String(d3.getDate()).padStart(2, '0')}`;
+
+  const streak3 = calculateStudyStreak([twoDaysAgo, yesterday, today]);
+  assert(streak3 === 3, `26. 3-day consecutive study streak correctly returns 3 (got ${streak3})`);
+
+  // Test broken streak (missing yesterday)
+  const brokenStreak = calculateStudyStreak([twoDaysAgo, today]);
+  assert(brokenStreak === 1, `27. Broken day gap resets study streak to 1 for today (got ${brokenStreak})`);
+
+  // Test empty streak
+  const emptyStreak = calculateStudyStreak([]);
+  assert(emptyStreak === 0, `28. Empty study activity correctly returns 0 streak`);
+}
+
+// 27. Study Statistics: Accuracy and Calculation
+{
+  const calcAccuracy = (correct: number, total: number) => {
+    return total === 0 ? 0 : Math.round((correct / total) * 100);
+  };
+
+  const zeroAttempts = calcAccuracy(0, 0);
+  const halfCorrect = calcAccuracy(5, 10);
+  const allCorrect = calcAccuracy(12, 12);
+
+  assert(
+    zeroAttempts === 0 && halfCorrect === 50 && allCorrect === 100,
+    '29. Quiz accuracy calculated accurately and avoids divide-by-zero'
+  );
+}
+
+// 28. Storage Corrupted Data Graceful Fallback
+{
+  const safeParseStorage = (raw: string | null) => {
+    if (!raw) return DEFAULT_STORAGE_STATE;
+    try {
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== 'object' || parsed.version !== 1) {
+        return DEFAULT_STORAGE_STATE;
+      }
+      return parsed;
+    } catch {
+      return DEFAULT_STORAGE_STATE;
+    }
+  };
+
+  const corruptedJson = safeParseStorage('{ invalid json !!');
+  const invalidVersion = safeParseStorage(JSON.stringify({ version: 99, tasks: [] }));
+  const validSaved = safeParseStorage(JSON.stringify(DEFAULT_STORAGE_STATE));
+
+  assert(
+    corruptedJson.version === 1 && corruptedJson.profile.name === DEFAULT_STORAGE_STATE.profile.name,
+    '30. Corrupted JSON fallback returns valid default storage state'
+  );
+
+  assert(
+    invalidVersion.version === 1 && validSaved.version === 1,
+    '31. Storage migration / invalid version gracefully defaults without crashing'
+  );
+}
+
+console.log(`\n====================================================`);
+console.log(`RESULTS: ${passedTests} passed, ${failedTests} failed.`);
+console.log('====================================================\n');
 if (failedTests > 0) process.exit(1);

@@ -1,6 +1,7 @@
 import React from 'react';
-import { RefreshCw, HelpCircle, CheckCircle2 } from 'lucide-react';
+import { RefreshCw, HelpCircle, CheckCircle2, Bookmark as BookmarkIcon } from 'lucide-react';
 import { Flashcard as FlashcardType } from '../../types/study';
+import { useProductivity } from '../../context/ProductivityContext';
 
 interface FlashcardProps {
   card: FlashcardType;
@@ -17,6 +18,26 @@ export const Flashcard: React.FC<FlashcardProps> = ({
   cardNumber,
   totalCards,
 }) => {
+  const { isBookmarked, addBookmark, removeBookmark } = useProductivity();
+  const bookmarked = isBookmarked(card.id);
+
+  const toggleBookmark = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (bookmarked) {
+      removeBookmark(card.id);
+    } else {
+      addBookmark({
+        type: 'flashcard',
+        title: card.question,
+        content: card.answer,
+        sourceId: card.id,
+        metadata: {
+          difficulty: card.difficulty,
+        },
+      });
+    }
+  };
+
   const getDifficultyBadge = (difficulty: string) => {
     switch (difficulty) {
       case 'easy':
@@ -53,6 +74,19 @@ export const Flashcard: React.FC<FlashcardProps> = ({
               <span>QUESTION</span>
             </div>
             <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={toggleBookmark}
+                className={`flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold transition-all ${
+                  bookmarked
+                    ? 'bg-amber-500/25 text-amber-300 border border-amber-500/50'
+                    : 'bg-white/10 hover:bg-white/20 text-slate-300 border border-white/15'
+                }`}
+                aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark flashcard'}
+              >
+                <BookmarkIcon className={`w-3.5 h-3.5 ${bookmarked ? 'fill-current text-amber-400' : ''}`} />
+                <span>{bookmarked ? '★ Saved' : '☆ Save'}</span>
+              </button>
               {getDifficultyBadge(card.difficulty)}
               <span className="font-semibold text-[var(--foreground)]">
                 {cardNumber} / {totalCards}
@@ -80,6 +114,19 @@ export const Flashcard: React.FC<FlashcardProps> = ({
               <span>KEY INSIGHT & ANSWER</span>
             </div>
             <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={toggleBookmark}
+                className={`flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold transition-all ${
+                  bookmarked
+                    ? 'bg-amber-500/25 text-amber-300 border border-amber-500/50'
+                    : 'bg-white/10 hover:bg-white/20 text-slate-300 border border-white/15'
+                }`}
+                aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark flashcard'}
+              >
+                <BookmarkIcon className={`w-3.5 h-3.5 ${bookmarked ? 'fill-current text-amber-400' : ''}`} />
+                <span>{bookmarked ? '★ Saved' : '☆ Save'}</span>
+              </button>
               {getDifficultyBadge(card.difficulty)}
               <span className="font-semibold text-[var(--foreground)]">
                 {cardNumber} / {totalCards}
