@@ -32,7 +32,7 @@ export const Header: React.FC<HeaderProps> = ({
       case 'profile':
         return 'Student Profile & Statistics';
       default:
-        return 'StudyAI';
+        return 'Karen';
     }
   };
 

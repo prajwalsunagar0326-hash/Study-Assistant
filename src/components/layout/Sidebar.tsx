@@ -97,7 +97,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div
               onClick={() => handleSelectTab('dashboard')}
               className="w-9 h-9 rounded-xl bg-gradient-to-tr from-slate-300 via-white to-slate-200 text-slate-950 flex items-center justify-center shadow-md shadow-white/10 shrink-0 cursor-pointer border border-white/40"
-              title="StudyAI - Home"
+              title="Karen - Home"
               role="button"
               tabIndex={0}
               aria-label="Go to Dashboard"
@@ -118,7 +118,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 >
                   <div className="flex items-center gap-1.5">
                     <span className="font-extrabold text-lg tracking-tight text-[var(--foreground)]">
-                      Study<span className="gradient-text">AI</span>
+                      Kar<span className="gradient-text">en</span>
                     </span>
                     <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-[var(--surface-muted)] text-[var(--foreground)] border border-[var(--border)]">
                       PRO

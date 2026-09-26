@@ -267,7 +267,7 @@ const AppContent: React.FC = () => {
           <footer className="w-full border-t border-[var(--border-subtle)] bg-[var(--surface-glass)] py-6 mt-auto">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--muted)]">
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-[var(--foreground)]">StudyAI</span>
+                <span className="font-semibold text-[var(--foreground)]">Karen</span>
                 <span>•</span>
                 <span>Turn your notes into interactive learning</span>
               </div>
